@@ -1,11 +1,15 @@
 package com.snippetsearcher.snippet.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "snippet")
 public class Snippet {
     @Id
@@ -30,39 +34,7 @@ public class Snippet {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setName(String v) {
-        this.name = v;
-    }
-
-    public void setLanguage(String v) {
-        this.language = v;
-    }
-
-    public void setContent(String v) {
-        this.content = v;
-    }
-
-    public void setCreatedAt(Instant v) {
-        this.createdAt = v;
     }
 }
