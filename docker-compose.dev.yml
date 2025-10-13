@@ -1,0 +1,41 @@
+services:
+  snippet-postgres:
+    image: postgres:16-alpine
+    container_name: snippet-postgres
+    environment:
+      POSTGRES_DB: snippetdb
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"  #lo saco?
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    networks:
+      - ss-dev
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  snippet-service:
+    build: .
+    container_name: snippet-service
+    depends_on:
+      snippet-postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      LANGUAGE_BASE_URL: http://language-service:8082
+    ports:
+      - "8081:8081"
+    networks:
+      - ss-dev
+
+volumes:
+  pg_data:
+
+networks:
+  ss-dev:
+    external: true
