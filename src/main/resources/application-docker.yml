@@ -1,17 +1,19 @@
 server:
   port: 8081
-management.endpoints.web.exposure.include: health,info
 
 spring:
   datasource:
-    url: jdbc:postgresql://snippet-postgres:5432/snippetdb
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate:
+      ddl-auto: validate
     open-in-view: false
   flyway:
     enabled: true
+
+management.endpoints.web.exposure.include: health,info
 
 language:
   base-url: ${LANGUAGE_BASE_URL}

@@ -26,12 +26,6 @@ services:
       snippet-db:
         condition: service_healthy
     env_file: [.env]
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://snippet-postgres:5432/${DB_NAME}
-      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      LANGUAGE_BASE_URL: ${LANGUAGE_BASE_URL}
     ports:
       - "8081:8081"
     networks:
