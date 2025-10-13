@@ -29,12 +29,4 @@ public class Snippet {
         s.createdAt = Instant.now();
         return s;
     }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 }
