@@ -1,7 +1,12 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
+	id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'com.snippetsearcher'
@@ -9,35 +14,129 @@ version = '0.0.1-SNAPSHOT'
 description = 'Snippet CRUD + validation via language-service'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+	toolchain { languageVersion = JavaLanguageVersion.of(21) }
 }
 
-repositories {
-	mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.flywaydb:flyway-database-postgresql'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	implementation 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	testImplementation 'org.projectlombok:lombok:1.18.32'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.projectlombok:lombok:1.18.32'
-    annotationProcessor 'org.projectlombok:lombok:1.18.32'
-    testImplementation 'org.projectlombok:lombok:1.18.32'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
-
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+spotless {
+	java {
+		target 'src/**/*.java'
+		googleJavaFormat()
+		trimTrailingWhitespace()
+		endWithNewline()
+		// indentWithSpaces(4)
+	}
+	format 'misc', {
+		target '*.md', '.gitignore'
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+}
+
+jacoco {
+	toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+	}
+	def bdir = layout.buildDirectory.get().asFile
+	executionData.from fileTree(bdir).include(
+			'jacoco/test.exec',
+			'jacoco/test*.exec',
+			'outputs/unit_test_code_coverage/*/*.ec'
+	)
+}
+
+tasks.named('jacocoTestCoverageVerification') {
+	dependsOn test
+	violationRules {
+		rule { limit { minimum = 0.80 } }
+	}
+	def bdir = layout.buildDirectory.get().asFile
+	executionData.from fileTree(bdir).include(
+			'jacoco/test.exec',
+			'jacoco/test*.exec',
+			'outputs/unit_test_code_coverage/*/*.ec'
+	)
+}
+
+check {
+	dependsOn 'spotlessCheck', 'jacocoTestReport', 'jacocoTestCoverageVerification'
+}
+
+tasks.register('installGitHooks') {
+	group = 'git'
+	description = 'Copia pre-commit (spotlessApply+test) y pre-push (check) a .git/hooks'
+	doLast {
+		def gitDir = file('.git')
+		if (!gitDir.exists()) {
+			println '⚠️  No se encontró .git/ en este directorio. ¿Ejecutaste `git init`?'
+			return
+		}
+
+		def scriptsDir = file('gradle/scripts'); scriptsDir.mkdirs()
+
+		def preCommit = new File(scriptsDir, 'pre-commit')
+		if (!preCommit.exists()) {
+			preCommit.text = '''#!/usr/bin/env bash
+set -euo pipefail
+echo "[HOOK] Running pre-commit..."
+./gradlew -q spotlessApply
+./gradlew -q test
+'''
+		}
+
+		def prePush = new File(scriptsDir, 'pre-push')
+		if (!prePush.exists()) {
+			prePush.text = '''#!/usr/bin/env bash
+set -euo pipefail
+echo "[HOOK] Running pre-push..."
+./gradlew -q check
+'''
+		}
+
+		preCommit.setExecutable(true); prePush.setExecutable(true)
+
+		def hooksDir = new File(gitDir, 'hooks'); hooksDir.mkdirs()
+		def destPreCommit = new File(hooksDir, 'pre-commit')
+		def destPrePush   = new File(hooksDir, 'pre-push')
+
+		Files.copy(preCommit.toPath(), destPreCommit.toPath(), StandardCopyOption.REPLACE_EXISTING)
+		Files.copy(prePush.toPath(),   destPrePush.toPath(),   StandardCopyOption.REPLACE_EXISTING)
+
+		destPreCommit.setExecutable(true); destPrePush.setExecutable(true)
+		println '✅ Git hooks instalados en .git/hooks'
+	}
 }
