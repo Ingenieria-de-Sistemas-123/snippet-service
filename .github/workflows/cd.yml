@@ -42,16 +42,15 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: austral-ingsis
           password: ${{ github.token }}
 
       - name: Build and Push Image
         id: docker-build-push
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/snippet-service:latest
-            ghcr.io/${{ github.repository_owner }}/snippet-service:${{ steps.tag-name.outputs.tag }}
+            ghcr.io/austral-ingsis/${{ steps.image-env-name.outputs.image_name }}:${{ steps.tag-branch-name.outputs.tag }}
+            ghcr.io/austral-ingsis/${{ steps.image-env-name.outputs.image_name }}
