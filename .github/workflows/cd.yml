@@ -20,23 +20,15 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Gradle build
-        run: ./gradlew build
-        shell: bash
 
       - name: Get Branch Name
         id: branch
         uses: appleboy/branch-name-action@v1.0.2
 
-
       - name: Get Git Tag
-        id: tag
+        id: tag-name
         uses: appleboy/git-tag-action@v1.0.4
 
       - name: Login to GitHub Container Registry
@@ -54,5 +46,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ steps.image-env-name.outputs.image_name }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ steps.image-env-name.outputs.image_name }}:${{ steps.tag-branch-name.outputs.tag_name }}
+            ghcr.io/${{ github.repository_owner }}/snippet-service:latest
+            ghcr.io/${{ github.repository_owner }}/snippet-service:${{ steps.tag-name.outputs.tag }}
