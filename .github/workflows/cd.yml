@@ -1,9 +1,13 @@
 name: Publish images
 on:
+  workflow_run:
+    workflows: [ "CI" ]
+    types: [ completed ]
   push:
-    branches: [main, test/*]
+    branches: ['**']
 jobs:
   publish:
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -36,7 +40,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_PAT }}
+          password: ${{ github.token }}
 
       - name: Build and Push Image
         id: docker-build-push
