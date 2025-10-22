@@ -2,6 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
+	id 'com.diffplug.spotless' version '6.25.0'
+	id 'maven-publish'
 }
 
 group = 'com.snippetsearcher'
@@ -41,3 +44,107 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
+spotless {
+	java {
+		target '**/*.java'
+		googleJavaFormat()
+		trimTrailingWhitespace()
+		endWithNewline()
+		indentWithSpaces(4)
+	}
+}
+
+tasks.withType(Test).configureEach {
+	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+	toolVersion = '0.8.11'
+}
+
+if (!tasks.names.contains('jacocoTestReport')) {
+	tasks.register('jacocoTestReport', JacocoReport) {
+		dependsOn 'test'
+		reports {
+			xml.required.set(true)
+			html.required.set(true)
+		}
+		executionData.from fileTree(buildDir) {
+			include 'jacoco/test.exec',
+					'jacoco/test*.exec',
+					'outputs/unit_test_code_coverage/*/*.ec'
+		}
+	}
+} else {
+	tasks.named('jacocoTestReport', JacocoReport).configure {
+		reports {
+			xml.required.set(true)
+			html.required.set(true)
+		}
+		executionData.from fileTree(buildDir) {
+			include 'jacoco/test.exec',
+					'jacoco/test*.exec',
+					'outputs/unit_test_code_coverage/*/*.ec'
+		}
+	}
+}
+
+if (!tasks.names.contains('jacocoTestCoverageVerification')) {
+	tasks.register('jacocoTestCoverageVerification', JacocoCoverageVerification) {
+		dependsOn 'test'
+		violationRules {
+			rule {
+				limit {
+					minimum = 0.80
+				}
+			}
+		}
+		executionData.from fileTree(buildDir) {
+			include 'jacoco/test.exec',
+					'jacoco/test*.exec',
+					'outputs/unit_test_code_coverage/*/*.ec'
+		}
+	}
+} else {
+	tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification).configure {
+		violationRules {
+			rule {
+				limit {
+					minimum = 0.80
+				}
+			}
+		}
+		executionData.from fileTree(buildDir) {
+			include 'jacoco/test.exec',
+					'jacoco/test*.exec',
+					'outputs/unit_test_code_coverage/*/*.ec'
+		}
+	}
+}
+
+
+tasks.named('check') {
+	dependsOn 'spotlessCheck', 'jacocoTestReport', 'jacocoTestCoverageVerification'
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			name = 'GitHubPackages'
+			url = uri('https://maven.pkg.github.com/Ingenieria-de-Sistemas-123/PrintScript')
+			credentials {
+				username = System.getenv('GITHUB_ACTOR') ?: ''
+				password = System.getenv('GITHUB_TOKEN') ?: ''
+			}
+		}
+	}
+}
+
