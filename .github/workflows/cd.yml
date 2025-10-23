@@ -38,8 +38,21 @@ jobs:
         id: img
         run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
 
+      - name: Compute tag safely
+        id: tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Si es push de tag → usa ese tag; si no → usa commit-<sha7>
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=commit-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+          SAFE_BRANCH="${GITHUB_REF_NAME//\//-}"
+          echo "branch=${SAFE_BRANCH}" >> "$GITHUB_OUTPUT"
+
       - name: Build and Push Image
-        id: docker-build-push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -47,4 +60,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:latest
-            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag-name.outputs.tag }}
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}
