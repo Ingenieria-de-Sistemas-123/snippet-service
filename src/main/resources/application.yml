@@ -10,3 +10,9 @@ spring:
   flyway:
     enabled: true
 management.endpoints.web.exposure.include: health,info
+logging:
+  level:
+    org.springframework: DEBUG
+    org.hibernate: DEBUG
+    com.example.snippetservice: DEBUG
+

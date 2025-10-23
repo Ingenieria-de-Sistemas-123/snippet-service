@@ -1,0 +1,64 @@
+name: Publish images
+on:
+  workflow_run:
+    workflows: [ "CI" ]
+    types: [ completed ]
+  push:
+    branches: ['**']
+jobs:
+  publish:
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token}}
+
+      - name: Normalize owner to lowercase
+        id: img
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - name: Compute tag safely
+        id: tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Si es push de tag → usa ese tag; si no → usa commit-<sha7>
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=commit-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+          SAFE_BRANCH="${GITHUB_REF_NAME//\//-}"
+          echo "branch=${SAFE_BRANCH}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:latest
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}

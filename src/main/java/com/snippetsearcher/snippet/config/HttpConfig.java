@@ -6,9 +6,8 @@ import org.springframework.web.client.RestClient;
 
 @org.springframework.context.annotation.Configuration
 public class HttpConfig {
-    @Bean
-    RestClient restClient(RestClient.Builder b,
-                          @Value("${language.base-url}") String baseUrl){
-        return b.baseUrl(baseUrl).build();
-    }
+  @Bean
+  RestClient restClient(RestClient.Builder b, @Value("${language.base-url}") String baseUrl) {
+    return b.baseUrl(baseUrl).build();
+  }
 }
