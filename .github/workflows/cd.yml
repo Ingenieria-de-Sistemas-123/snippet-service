@@ -34,6 +34,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token}}
 
+      - name: Normalize owner to lowercase
+        id: img
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
       - name: Build and Push Image
         id: docker-build-push
         uses: docker/build-push-action@v6
@@ -42,5 +46,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/snippet-service:latest
-            ghcr.io/${{ github.repository_owner }}/snippet-service:${{ steps.tag-name.outputs.tag }}
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:latest
+            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag-name.outputs.tag }}
