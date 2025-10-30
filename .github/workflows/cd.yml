@@ -62,3 +62,4 @@ jobs:
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:latest
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}
+
