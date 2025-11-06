@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/snippet-db
+    url: jdbc:postgresql://snippet-db:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
@@ -9,10 +9,18 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
-management.endpoints.web.exposure.include: health,info
+
+language:
+  base-url: ${LANGUAGE_BASE_URL:http://localhost:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 logging:
   level:
-    org.springframework: DEBUG
-    org.hibernate: DEBUG
-    com.example.snippetservice: DEBUG
-
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    com.snippetsearcher.snippet: DEBUG
