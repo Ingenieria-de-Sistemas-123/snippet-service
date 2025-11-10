@@ -1,6 +1,7 @@
 package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.dto.LanguageDtos;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -8,7 +9,7 @@ import org.springframework.web.client.RestClient;
 public class LanguageValidationService {
   private final RestClient http;
 
-  public LanguageValidationService(RestClient http) {
+  public LanguageValidationService(@Qualifier("languageRestClient") RestClient http) {
     this.http = http;
   }
 
@@ -22,4 +23,3 @@ public class LanguageValidationService {
     }
   }
 }
-
