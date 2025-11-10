@@ -3,6 +3,7 @@ package com.snippetsearcher.snippet.controller;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
+import com.snippetsearcher.snippet.service.LanguageValidationService;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -11,17 +12,16 @@ import java.util.UUID;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/snippets")
 public class SnippetController {
-  private final RestClient http;
+  private final LanguageValidationService validator;
   private final SnippetRepository repo;
 
-  public SnippetController(RestClient http, SnippetRepository repo) {
-    this.http = http;
+  public SnippetController(LanguageValidationService validator, SnippetRepository repo) {
+    this.validator = validator;
     this.repo = repo;
   }
 
@@ -30,8 +30,7 @@ public class SnippetController {
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> create(@RequestBody CreateSnippet body) {
-    var req = new LanguageDtos.ValidateRequest(body.language(), body.version(), body.content());
-    var resp = http.post().uri("/validate").body(req).retrieve().body(LanguageDtos.ValidateResponse.class);
+    LanguageDtos.ValidateResponse resp = validator.validate(body.language(), body.version(), body.content());
     if (resp == null || !resp.valid()) {
       return ResponseEntity.badRequest().body(resp == null ? Map.of("error", "Validation failed") : Map.of("valid", false, "errors", resp.errors()));
     }
@@ -47,8 +46,7 @@ public class SnippetController {
       @RequestPart("version") String version,
       @RequestPart("file") MultipartFile file) throws IOException {
     String content = new String(file.getBytes(), StandardCharsets.UTF_8);
-    var req = new LanguageDtos.ValidateRequest(language, version, content);
-    var resp = http.post().uri("/validate").body(req).retrieve().body(LanguageDtos.ValidateResponse.class);
+    LanguageDtos.ValidateResponse resp = validator.validate(language, version, content);
     if (resp == null || !resp.valid()) {
       return ResponseEntity.badRequest().body(resp == null ? Map.of("error", "Validation failed") : Map.of("valid", false, "errors", resp.errors()));
     }
@@ -69,8 +67,7 @@ public class SnippetController {
       return ResponseEntity.notFound().build();
     }
     String content = new String(file.getBytes(), StandardCharsets.UTF_8);
-    var req = new LanguageDtos.ValidateRequest(language, version, content);
-    var resp = http.post().uri("/validate").body(req).retrieve().body(LanguageDtos.ValidateResponse.class);
+    LanguageDtos.ValidateResponse resp = validator.validate(language, version, content);
     if (resp == null || !resp.valid()) {
       return ResponseEntity.badRequest().body(resp == null ? Map.of("error", "Validation failed") : Map.of("valid", false, "errors", resp.errors()));
     }
@@ -85,8 +82,7 @@ public class SnippetController {
     if (snippet == null) {
       return ResponseEntity.notFound().build();
     }
-    var req = new LanguageDtos.ValidateRequest(body.language(), body.version(), body.content());
-    var resp = http.post().uri("/validate").body(req).retrieve().body(LanguageDtos.ValidateResponse.class);
+    LanguageDtos.ValidateResponse resp = validator.validate(body.language(), body.version(), body.content());
     if (resp == null || !resp.valid()) {
       return ResponseEntity.badRequest().body(resp == null ? Map.of("error", "Validation failed") : Map.of("valid", false, "errors", resp.errors()));
     }
