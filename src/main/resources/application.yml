@@ -1,4 +1,11 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH0_ISSUER_URI}
+  auth0:
+    audience: ${AUTH0_AUDIENCE}
   datasource:
     url: jdbc:postgresql://localhost:5432/snippet-db
     username: ${DB_USERNAME}
