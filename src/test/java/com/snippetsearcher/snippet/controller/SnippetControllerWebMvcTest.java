@@ -1,6 +1,5 @@
 package com.snippetsearcher.snippet.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -11,19 +10,30 @@ import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.service.SnippetService;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
 
 @WebMvcTest(SnippetController.class)
+@Import(SnippetControllerWebMvcTest.MvcTestConfig.class)
 class SnippetControllerWebMvcTest {
 
+  @TestConfiguration
+  static class MvcTestConfig {
+    @Bean
+    SnippetService service() {
+      return Mockito.mock(SnippetService.class);
+    }
+  }
+
   @Autowired MockMvc mvc;
-@SuppressWarnings("removal")
-  @MockBean SnippetService service;
+  @Autowired SnippetService service;
   @Autowired ObjectMapper mapper;
 
   @Test
