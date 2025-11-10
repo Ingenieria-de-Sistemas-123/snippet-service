@@ -15,4 +15,4 @@ management.endpoints.web.exposure.include: health,info
 language:
   base-url: ${LANGUAGE_BASE_URL}
 permission:
-  base-url: ${PERMISSION_BASE_URL:http://permission-service:8080}
+  base-url: ${PERMISSION_BASE_URL:https://permission-service:8080}
