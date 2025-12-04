@@ -1,7 +1,7 @@
 package com.snippetsearcher.snippet.model;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,41 +9,116 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "snippet")
+@Table(name = "snippets")
 public class Snippet {
-  @Id private UUID id;
+
+  @Id
+  @GeneratedValue
+  @Column(columnDefinition = "uuid")
+  private UUID id;
+
+  @Column(nullable = false, length = 200)
   private String name;
-  private String description; // nueva descripcion
+
+  @Column(nullable = false, length = 50)
   private String language;
-  private String version; // version del lenguaje
 
-  @Column(columnDefinition = "TEXT")
-  private String content;
+  @Column(length = 1000)
+  private String description;
 
-  private Instant createdAt;
-  private Instant updatedAt;
+  @Column(name = "asset_key", nullable = false, unique = true, length = 300)
+  private String assetKey;
 
-  public static Snippet of(
-      String name, String description, String language, String version, String content) {
-    Snippet s = new Snippet();
-    s.id = UUID.randomUUID();
-    s.name = name;
-    s.description = description;
-    s.language = language;
-    s.version = version;
-    s.content = content;
-    s.createdAt = Instant.now();
-    s.updatedAt = s.createdAt;
-    return s;
+  @Column(name = "owner_user_id", nullable = false, columnDefinition = "uuid")
+  private UUID ownerUserId;
+
+  @Column(name = "created_at", nullable = false)
+  private OffsetDateTime createdAt = OffsetDateTime.now();
+
+  @Column(name = "updated_at", nullable = false)
+  private OffsetDateTime updatedAt = OffsetDateTime.now();
+
+  protected Snippet() {
+    // JPA
   }
 
-  public void update(
-      String name, String description, String language, String version, String content) {
+  public Snippet(
+      String name, String language, String description, String assetKey, UUID ownerUserId) {
     this.name = name;
-    this.description = description;
     this.language = language;
-    this.version = version;
-    this.content = content;
-    this.updatedAt = Instant.now();
+    this.description = description;
+    this.assetKey = assetKey;
+    this.ownerUserId = ownerUserId;
+  }
+
+  @PreUpdate
+  public void touchUpdatedAt() {
+    this.updatedAt = OffsetDateTime.now();
+  }
+
+  // ---------- getters / setters ----------
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getAssetKey() {
+    return assetKey;
+  }
+
+  public void setAssetKey(String assetKey) {
+    this.assetKey = assetKey;
+  }
+
+  public UUID getOwnerUserId() {
+    return ownerUserId;
+  }
+
+  public void setOwnerUserId(UUID ownerUserId) {
+    this.ownerUserId = ownerUserId;
+  }
+
+  public OffsetDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public OffsetDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(OffsetDateTime updatedAt) {
+    this.updatedAt = updatedAt;
   }
 }

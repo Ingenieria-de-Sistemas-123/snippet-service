@@ -3,13 +3,28 @@ spring:
     url: jdbc:postgresql://localhost:5432/snippet-db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
   flyway:
     enabled: true
-management.endpoints.web.exposure.include: health,info
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # para local podés hardcodear o usar env var
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:https://dev-7t5evioih4aq30t7.us.auth0.com/}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 logging:
   level:
     org.springframework: INFO
@@ -18,3 +33,10 @@ logging:
 
 language:
   base-url: ${LANGUAGE_BASE_URL:http://localhost:8082}
+
+asset-service:
+  base-url: http://asset-service:8080
+  snippets-container: snippets
+
+permission-service:
+  base-url: http://permission-service:8080

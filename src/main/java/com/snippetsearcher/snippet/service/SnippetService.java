@@ -1,53 +1,80 @@
 package com.snippetsearcher.snippet.service;
 
-import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.language.LanguageClient;
+import com.snippetsearcher.snippet.client.AssetClient;
+import com.snippetsearcher.snippet.client.PermissionClient;
+import com.snippetsearcher.snippet.dto.UserAccountDto;
+import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
+import com.snippetsearcher.snippet.dto.response.SnippetResponse;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
-import java.util.List;
+import java.io.IOException;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class SnippetService {
-  private final LanguageClient lang;
-  private final SnippetRepository repo;
 
-  public SnippetService(LanguageClient lang, SnippetRepository repo) {
-    this.lang = lang;
-    this.repo = repo;
+  private final SnippetRepository snippetRepository;
+  private final AssetClient assetClient;
+  private final PermissionClient permissionClient;
+  private final String snippetsContainer;
+
+  public SnippetService(
+      SnippetRepository snippetRepository,
+      AssetClient assetClient,
+      PermissionClient permissionClient,
+      @Value("${asset-service.snippets-container:snippets}") String snippetsContainer) {
+    this.snippetRepository = snippetRepository;
+    this.assetClient = assetClient;
+    this.permissionClient = permissionClient;
+    this.snippetsContainer = snippetsContainer;
   }
 
-  public Snippet create(String name, String language, String versionOrNull, String content) {
-    String version = (versionOrNull == null || versionOrNull.isBlank()) ? "1.0" : versionOrNull;
-
-    var vRes = lang.validate(new LanguageDtos.ValidateRequest(language, version, content));
-    if (vRes == null || !vRes.valid()) {
-      throw new IllegalArgumentException(
-          "Invalid source: " + (vRes == null ? "unknown" : vRes.errors()));
+  /**
+   * Use Case 1: - asegura usuario en permission-service - sube archivo a asset-service - crea
+   * snippet en DB - crea permiso OWNER en permission-service
+   */
+  @Transactional
+  public SnippetResponse createSnippet(
+      String tokenValue, CreateSnippetRequest request, MultipartFile file) {
+    if (file == null || file.isEmpty()) {
+      throw new IllegalArgumentException("El archivo del snippet es obligatorio.");
     }
 
-    String finalContent = content;
-    var fRes = lang.format(new LanguageDtos.FormatRequest(language, version, content, false));
-    if (fRes != null && fRes.formatted() != null && !fRes.formatted().isBlank()) {
-      finalContent = fRes.formatted();
+    // 1) Asegurar/obtener usuario en permission-service
+    UserAccountDto user = permissionClient.ensureUser(tokenValue);
+    UUID userId = user.id();
+
+    // 2) Subir archivo a asset-service
+    String originalFilename =
+        (file.getOriginalFilename() != null && !file.getOriginalFilename().isBlank())
+            ? file.getOriginalFilename()
+            : "snippet.ps";
+
+    String key = UUID.randomUUID() + "-" + originalFilename;
+
+    byte[] content;
+    try {
+      content = file.getBytes();
+    } catch (IOException e) {
+      throw new IllegalStateException("No se pudo leer el contenido del archivo del snippet.", e);
     }
 
-    return repo.save(Snippet.of(name, language, finalContent));
-  }
+    String assetKey =
+        assetClient.uploadSnippet(snippetsContainer, key, content, file.getContentType());
 
-  public LanguageDtos.AnalyzeResponse analyze(
-      String language, String versionOrNull, String content) {
-    String version = (versionOrNull == null || versionOrNull.isBlank()) ? "1.0" : versionOrNull;
-    return lang.analyze(new LanguageDtos.AnalyzeRequest(language, version, content));
-  }
+    // 3) Crear snippet en DB local
+    Snippet snippet =
+        new Snippet(request.name(), request.language(), request.description(), assetKey, userId);
+    snippet = snippetRepository.save(snippet);
 
-  public LanguageDtos.ExecuteResponse execute(
-      String language, String versionOrNull, String content) {
-    String version = (versionOrNull == null || versionOrNull.isBlank()) ? "1.0" : versionOrNull;
-    return lang.execute(new LanguageDtos.ExecuteRequest(language, version, content));
-  }
+    // 4) Crear permiso OWNER en permission-service
+    permissionClient.createOwnerPermission(tokenValue, userId, snippet.getId());
 
-  public List<Snippet> list() {
-    return repo.findAll();
+    // 5) Devolver respuesta
+    return SnippetResponse.fromEntity(snippet);
   }
 }
