@@ -12,9 +12,9 @@ spring:
 management.endpoints.web.exposure.include: health,info
 logging:
   level:
-    org.springframework: DEBUG
-    org.hibernate: DEBUG
-    com.example.snippetservice: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    com.snippetsearcher.snippet: DEBUG
 
 language:
   base-url: ${LANGUAGE_BASE_URL:http://localhost:8082}
