@@ -1,9 +1,9 @@
 package com.snippetsearcher.snippet.controller;
 
-import com.snippetsearcher.snippet.service.SnippetService;
 import com.snippetsearcher.snippet.dto.LanguageDtos.AnalyzeResponse;
 import com.snippetsearcher.snippet.dto.LanguageDtos.ExecuteResponse;
 import com.snippetsearcher.snippet.model.Snippet;
+import com.snippetsearcher.snippet.service.SnippetService;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,14 @@ public class SnippetController {
 
   private final SnippetService app;
 
-  public SnippetController(SnippetService app) { this.app = app; }
+  public SnippetController(SnippetService app) {
+    this.app = app;
+  }
 
   public record CreateSnippet(String name, String language, String version, String content) {}
+
   public record AnalyzeBody(String language, String version, String content) {}
+
   public record ExecuteBody(String language, String version, String content) {}
 
   @PostMapping
