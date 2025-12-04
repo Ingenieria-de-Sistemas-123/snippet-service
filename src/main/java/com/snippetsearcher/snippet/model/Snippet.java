@@ -23,7 +23,8 @@ public class Snippet {
   private Instant createdAt;
   private Instant updatedAt;
 
-  public static Snippet of(String name, String description, String language, String version, String content) {
+  public static Snippet of(
+      String name, String description, String language, String version, String content) {
     Snippet s = new Snippet();
     s.id = UUID.randomUUID();
     s.name = name;
@@ -36,7 +37,8 @@ public class Snippet {
     return s;
   }
 
-  public void update(String name, String description, String language, String version, String content) {
+  public void update(
+      String name, String description, String language, String version, String content) {
     this.name = name;
     this.description = description;
     this.language = language;

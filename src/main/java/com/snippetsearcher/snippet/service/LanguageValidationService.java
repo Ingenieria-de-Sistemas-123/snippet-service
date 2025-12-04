@@ -15,11 +15,14 @@ public class LanguageValidationService {
   public LanguageDtos.ValidateResponse validate(String language, String version, String content) {
     try {
       var req = new LanguageDtos.ValidateRequest(language, version, content);
-      return http.post().uri("/validate").body(req).retrieve().body(LanguageDtos.ValidateResponse.class);
+      return http.post()
+          .uri("/validate")
+          .body(req)
+          .retrieve()
+          .body(LanguageDtos.ValidateResponse.class);
     } catch (Exception e) {
       // Placeholder: en producción, mapear errores/transient errors y circuit breaker
       return null;
     }
   }
 }
-
