@@ -35,8 +35,8 @@ language:
   base-url: ${LANGUAGE_BASE_URL:http://localhost:8082}
 
 asset-service:
-  base-url: http://asset-service:8080
+  base-url: ${ASSET_SERVICE_BASE_URL:http://asset-service:8080}
   snippets-container: snippets
 
 permission-service:
-  base-url: http://permission-service:8080
+  base-url: ${PERMISSION_SERVICE_BASE_URL:http://permission-service:8080}
