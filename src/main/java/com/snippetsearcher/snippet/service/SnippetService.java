@@ -92,7 +92,7 @@ public class SnippetService {
         if (validation != null && !validation.valid()) {
             var firstError =
                     validation.errors() != null && !validation.errors().isEmpty()
-                            ? validation.errors().get(0)
+                            ? validation.errors().getFirst()
                             : null;
 
             if (firstError != null) {
