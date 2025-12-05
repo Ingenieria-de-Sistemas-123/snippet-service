@@ -13,18 +13,15 @@ import lombok.Setter;
 public class Snippet {
   @Id private UUID id;
   private String name;
-  private String description; // nueva descripcion
+  private String description;
   private String language;
-  private String version; // version del lenguaje
-
-  @Column(columnDefinition = "TEXT")
+  private String version;
   private String content;
-
   private Instant createdAt;
   private Instant updatedAt;
 
   public static Snippet of(
-      String name, String description, String language, String version, String content) {
+          String name, String description, String language, String version, String content) {
     Snippet s = new Snippet();
     s.id = UUID.randomUUID();
     s.name = name;
