@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/snippet-db
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    com.snippetsearcher.snippet: DEBUG
+
+language:
+  base-url: ${LANGUAGE_BASE_URL:http://localhost:8082}
+
+asset-service:
+  base-url: ${ASSET_SERVICE_BASE_URL:http://localhost:8083}
+  snippets-container: snippets
+
+permission-service:
+  base-url: ${PERMISSION_SERVICE_BASE_URL:http://localhost:8084}

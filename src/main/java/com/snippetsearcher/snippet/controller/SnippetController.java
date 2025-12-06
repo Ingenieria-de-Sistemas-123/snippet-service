@@ -1,52 +1,37 @@
 package com.snippetsearcher.snippet.controller;
 
-import com.snippetsearcher.snippet.dto.LanguageDtos.AnalyzeResponse;
-import com.snippetsearcher.snippet.dto.LanguageDtos.ExecuteResponse;
-import com.snippetsearcher.snippet.model.Snippet;
+import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
+import com.snippetsearcher.snippet.dto.response.SnippetResponse;
 import com.snippetsearcher.snippet.service.SnippetService;
-import java.util.List;
-import java.util.Map;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/snippets")
+@RequestMapping("/api/snippets")
 public class SnippetController {
 
-  private final SnippetService app;
+  private final SnippetService snippetService;
 
-  public SnippetController(SnippetService app) {
-    this.app = app;
+  public SnippetController(SnippetService snippetService) {
+    this.snippetService = snippetService;
   }
 
-  public record CreateSnippet(String name, String language, String version, String content) {}
-
-  public record AnalyzeBody(String language, String version, String content) {}
-
-  public record ExecuteBody(String language, String version, String content) {}
-
-  @PostMapping
-  public ResponseEntity<?> create(@RequestBody CreateSnippet body) {
-    try {
-      Snippet saved = app.create(body.name(), body.language(), body.version(), body.content());
-      return ResponseEntity.ok(saved);
-    } catch (IllegalArgumentException ex) {
-      return ResponseEntity.badRequest().body(Map.of("valid", false, "errors", ex.getMessage()));
-    }
-  }
-
-  @PostMapping("/analyze")
-  public ResponseEntity<AnalyzeResponse> analyze(@RequestBody AnalyzeBody body) {
-    return ResponseEntity.ok(app.analyze(body.language(), body.version(), body.content()));
-  }
-
-  @PostMapping("/execute")
-  public ResponseEntity<ExecuteResponse> execute(@RequestBody ExecuteBody body) {
-    return ResponseEntity.ok(app.execute(body.language(), body.version(), body.content()));
-  }
-
-  @GetMapping
-  public List<Snippet> list() {
-    return app.list();
+  /**
+   * Use Case 1: crear snippet a partir de un archivo + metadatos.
+   *
+   * <p>Content-Type: multipart/form-data - file: archivo del snippet - request: JSON con
+   * CreateSnippetRequest
+   */
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public SnippetResponse createSnippet(
+      @AuthenticationPrincipal Jwt jwt,
+      @RequestPart("file") MultipartFile file,
+      @Valid @RequestPart("request") CreateSnippetRequest request) {
+    String tokenValue = jwt.getTokenValue();
+    return snippetService.createSnippet(tokenValue, request, file);
   }
 }
