@@ -1,23 +1,38 @@
 package com.snippetsearcher.snippet.controller;
 
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
+import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
+import com.snippetsearcher.snippet.dto.response.PageResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
+import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@Validated
 @RequestMapping("/api/snippets")
 public class SnippetController {
 
   private final SnippetService snippetService;
+  private final SnippetLanguageService snippetLanguageService;
 
-  public SnippetController(SnippetService snippetService) {
+  public SnippetController(
+      SnippetService snippetService, SnippetLanguageService snippetLanguageService) {
     this.snippetService = snippetService;
+    this.snippetLanguageService = snippetLanguageService;
   }
 
   /**
@@ -33,5 +48,47 @@ public class SnippetController {
       @Valid @RequestPart("request") CreateSnippetRequest request) {
     String tokenValue = jwt.getTokenValue();
     return snippetService.createSnippet(tokenValue, request, file);
+  }
+
+  @GetMapping
+  public PageResponse<SnippetResponse> listSnippets(
+      @AuthenticationPrincipal Jwt jwt,
+      @RequestParam(defaultValue = "0") @Min(0) int page,
+      @RequestParam(name = "page_size", defaultValue = "10") @Min(1) @Max(100) int pageSize,
+      @RequestParam(required = false) String name) {
+    return snippetService.listSnippets(jwt.getTokenValue(), page, pageSize, name);
+  }
+
+  @GetMapping("/{id}")
+  public SnippetResponse getSnippet(
+      @AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID snippetId) {
+    return snippetService.getSnippet(jwt.getTokenValue(), snippetId);
+  }
+
+  @PutMapping("/{id}")
+  public SnippetResponse updateSnippet(
+      @AuthenticationPrincipal Jwt jwt,
+      @PathVariable("id") UUID snippetId,
+      @Valid @RequestBody UpdateSnippetRequest request) {
+    return snippetService.updateSnippet(jwt.getTokenValue(), snippetId, request);
+  }
+
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteSnippet(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID snippetId) {
+    snippetService.deleteSnippet(jwt.getTokenValue(), snippetId);
+  }
+
+  @PostMapping("/{id}/share")
+  public SnippetResponse shareSnippet(
+      @AuthenticationPrincipal Jwt jwt,
+      @PathVariable("id") UUID snippetId,
+      @Valid @RequestBody ShareSnippetRequest request) {
+    return snippetService.shareSnippet(jwt.getTokenValue(), snippetId, request);
+  }
+
+  @PostMapping("/format")
+  public FormatSnippetResponse formatSnippet(@Valid @RequestBody FormatSnippetRequest request) {
+    return snippetLanguageService.formatSnippet(request);
   }
 }
