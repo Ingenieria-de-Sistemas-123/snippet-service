@@ -6,7 +6,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "rules")
 public class RuleEntity {
@@ -38,43 +42,4 @@ public class RuleEntity {
     this.value = value;
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public RuleType getType() {
-    return type;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public Integer getValue() {
-    return value;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setType(RuleType type) {
-    this.type = type;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
-  public void setValue(Integer value) {
-    this.value = value;
-  }
 }
