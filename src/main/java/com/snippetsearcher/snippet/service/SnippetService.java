@@ -100,8 +100,7 @@ public class SnippetService {
   }
 
   @Transactional(readOnly = true)
-  public ListSnippetsResponse listSnippets(
-      Jwt jwt, int page, int pageSize, String nameFilter) {
+  public ListSnippetsResponse listSnippets(Jwt jwt, int page, int pageSize, String nameFilter) {
     UserAccountDto user = ensureUser(jwt);
     Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "updatedAt"));
 
@@ -130,8 +129,7 @@ public class SnippetService {
   }
 
   @Transactional
-  public SnippetResponse updateSnippet(
-      Jwt jwt, UUID snippetId, UpdateSnippetRequest request) {
+  public SnippetResponse updateSnippet(Jwt jwt, UUID snippetId, UpdateSnippetRequest request) {
     UserAccountDto user = ensureUser(jwt);
     Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
     snippet.setName(request.name());
@@ -149,8 +147,7 @@ public class SnippetService {
   }
 
   @Transactional
-  public SnippetResponse shareSnippet(
-      Jwt jwt, UUID snippetId, ShareSnippetRequest request) {
+  public SnippetResponse shareSnippet(Jwt jwt, UUID snippetId, ShareSnippetRequest request) {
     if (request == null || request.userId() == null) {
       throw new IllegalArgumentException("El usuario destino es obligatorio.");
     }

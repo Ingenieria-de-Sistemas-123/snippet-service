@@ -29,8 +29,7 @@ public class RuleEntity {
   @Column(name = "is_active", nullable = false)
   private boolean active;
 
-  @Column
-  private Integer value;
+  @Column private Integer value;
 
   public RuleEntity() {}
 
@@ -41,5 +40,4 @@ public class RuleEntity {
     this.active = active;
     this.value = value;
   }
-
 }
