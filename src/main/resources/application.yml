@@ -40,3 +40,14 @@ asset-service:
 
 permission-service:
   base-url: ${PERMISSION_SERVICE_BASE_URL:http://permission-service:8080}
+
+snippet:
+  file-types:
+    - language: printscript
+      extension: prs
+    - language: python
+      extension: py
+    - language: java
+      extension: java
+    - language: golang
+      extension: go

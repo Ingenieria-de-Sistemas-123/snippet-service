@@ -43,12 +43,21 @@ public class PermissionClient {
 
   /** Crea un permiso OWNER para (snippetId, userId) en permission-service. */
   public void createOwnerPermission(String bearerToken, UUID userId, UUID snippetId) {
+    createPermission(bearerToken, snippetId, userId, PermissionTypeDto.OWNER);
+  }
+
+  /** Crea un permiso compartido. */
+  public void createSharedPermission(String bearerToken, UUID snippetId, UUID targetUserId) {
+    createPermission(bearerToken, snippetId, targetUserId, PermissionTypeDto.SHARED);
+  }
+
+  private void createPermission(
+      String bearerToken, UUID snippetId, UUID userId, PermissionTypeDto type) {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(bearerToken);
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    CreatePermissionRequestDto body =
-        new CreatePermissionRequestDto(snippetId, userId, PermissionTypeDto.OWNER);
+    CreatePermissionRequestDto body = new CreatePermissionRequestDto(snippetId, userId, type);
 
     HttpEntity<CreatePermissionRequestDto> entity = new HttpEntity<>(body, headers);
 

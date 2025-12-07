@@ -14,3 +14,14 @@ management.endpoints.web.exposure.include: health,info
 
 language:
   base-url: ${LANGUAGE_BASE_URL}
+
+snippet:
+  file-types:
+    - language: printscript
+      extension: prs
+    - language: python
+      extension: py
+    - language: java
+      extension: java
+    - language: golang
+      extension: go
