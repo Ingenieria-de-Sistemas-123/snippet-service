@@ -5,7 +5,7 @@ import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
-import com.snippetsearcher.snippet.dto.response.PageResponse;
+import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
 import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
@@ -46,23 +46,22 @@ public class SnippetController {
       @AuthenticationPrincipal Jwt jwt,
       @RequestPart("file") MultipartFile file,
       @Valid @RequestPart("request") CreateSnippetRequest request) {
-    String tokenValue = jwt.getTokenValue();
-    return snippetService.createSnippet(tokenValue, request, file);
+    return snippetService.createSnippet(jwt, request, file);
   }
 
   @GetMapping
-  public PageResponse<SnippetResponse> listSnippets(
+  public ListSnippetsResponse listSnippets(
       @AuthenticationPrincipal Jwt jwt,
       @RequestParam(defaultValue = "0") @Min(0) int page,
       @RequestParam(name = "page_size", defaultValue = "10") @Min(1) @Max(100) int pageSize,
       @RequestParam(required = false) String name) {
-    return snippetService.listSnippets(jwt.getTokenValue(), page, pageSize, name);
+    return snippetService.listSnippets(jwt, page, pageSize, name);
   }
 
   @GetMapping("/{id}")
   public SnippetResponse getSnippet(
       @AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID snippetId) {
-    return snippetService.getSnippet(jwt.getTokenValue(), snippetId);
+    return snippetService.getSnippet(jwt, snippetId);
   }
 
   @PutMapping("/{id}")
@@ -70,13 +69,13 @@ public class SnippetController {
       @AuthenticationPrincipal Jwt jwt,
       @PathVariable("id") UUID snippetId,
       @Valid @RequestBody UpdateSnippetRequest request) {
-    return snippetService.updateSnippet(jwt.getTokenValue(), snippetId, request);
+    return snippetService.updateSnippet(jwt, snippetId, request);
   }
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteSnippet(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID snippetId) {
-    snippetService.deleteSnippet(jwt.getTokenValue(), snippetId);
+    snippetService.deleteSnippet(jwt, snippetId);
   }
 
   @PostMapping("/{id}/share")
@@ -84,7 +83,7 @@ public class SnippetController {
       @AuthenticationPrincipal Jwt jwt,
       @PathVariable("id") UUID snippetId,
       @Valid @RequestBody ShareSnippetRequest request) {
-    return snippetService.shareSnippet(jwt.getTokenValue(), snippetId, request);
+    return snippetService.shareSnippet(jwt, snippetId, request);
   }
 
   @PostMapping("/format")

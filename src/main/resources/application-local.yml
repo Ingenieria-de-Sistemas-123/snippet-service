@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/snippet-db
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    username: ${DB_USERNAME:snippet}
+    password: ${DB_PASSWORD:snippet}
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,3 +23,14 @@ asset-service:
 
 permission-service:
   base-url: ${PERMISSION_SERVICE_BASE_URL:http://localhost:8084}
+
+snippet:
+  file-types:
+    - language: printscript
+      extension: prs
+    - language: python
+      extension: py
+    - language: java
+      extension: java
+    - language: golang
+      extension: go
