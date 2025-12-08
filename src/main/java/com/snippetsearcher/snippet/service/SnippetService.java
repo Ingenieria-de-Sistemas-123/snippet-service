@@ -59,33 +59,12 @@ public class SnippetService {
    */
   @Transactional
   public SnippetResponse createSnippet(Jwt jwt, CreateSnippetRequest request, MultipartFile file) {
-    if (file == null || file.isEmpty()) {
-      throw new IllegalArgumentException("El archivo del snippet es obligatorio.");
-    }
-
     // 1) Asegurar/obtener usuario en permission-service
     UserAccountDto user = ensureUser(jwt);
     UUID userId = user.id();
 
-    // 2) Subir archivo a asset-service
-    String originalFilename =
-        (file.getOriginalFilename() != null && !file.getOriginalFilename().isBlank())
-            ? sanitizeFilename(file.getOriginalFilename())
-            : "snippet.prs";
-
-    String key = UUID.randomUUID() + "-" + originalFilename;
-
-    byte[] content;
-    try {
-      content = file.getBytes();
-    } catch (IOException e) {
-      throw new IllegalStateException("No se pudo leer el contenido del archivo del snippet.", e);
-    }
-
-    validateLanguage(request, content);
-
-    String assetKey =
-        assetClient.uploadSnippet(snippetsContainer, key, content, file.getContentType());
+    // 2) Validar y subir archivo a asset-service
+    String assetKey = uploadValidatedSnippetContent(file, request.language(), request.version());
 
     // 3) Crear snippet en DB local
     Snippet snippet =
@@ -135,13 +114,16 @@ public class SnippetService {
   }
 
   @Transactional
-  public SnippetResponse updateSnippet(Jwt jwt, UUID snippetId, UpdateSnippetRequest request) {
+  public SnippetResponse updateSnippet(
+      Jwt jwt, UUID snippetId, UpdateSnippetRequest request, MultipartFile file) {
     UserAccountDto user = ensureUser(jwt);
     Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
+    String assetKey = uploadValidatedSnippetContent(file, request.language(), request.version());
     snippet.setName(request.name());
     snippet.setLanguage(request.language());
     snippet.setDescription(request.description());
     snippet.setVersion(request.version());
+    snippet.setAssetKey(assetKey);
     snippet = snippetRepository.save(snippet);
     return SnippetResponse.fromEntity(snippet);
   }
@@ -169,10 +151,10 @@ public class SnippetService {
     return SnippetResponse.fromEntity(snippet);
   }
 
-  private void validateLanguage(CreateSnippetRequest request, byte[] content) {
+  private void validateLanguage(String language, String version, byte[] content) {
     var validation =
         languageValidationService.validate(
-            request.language(), request.version(), new String(content, StandardCharsets.UTF_8));
+            language, version, new String(content, StandardCharsets.UTF_8));
 
     if (validation != null && !validation.valid()) {
       var firstError =
@@ -186,7 +168,7 @@ public class SnippetService {
         throw new IllegalArgumentException(
             "El snippet no es válido para el lenguaje %s (regla %s): %s (línea %d, columna %d)."
                 .formatted(
-                    request.language(),
+                    language,
                     violatedRule,
                     firstError.message(),
                     firstError.line(),
@@ -194,7 +176,33 @@ public class SnippetService {
       }
 
       throw new IllegalArgumentException(
-          "El snippet no es válido para el lenguaje %s.".formatted(request.language()));
+          "El snippet no es válido para el lenguaje %s.".formatted(language));
+    }
+  }
+
+  private String uploadValidatedSnippetContent(
+      MultipartFile file, String language, String version) {
+    if (file == null || file.isEmpty()) {
+      throw new IllegalArgumentException("El archivo del snippet es obligatorio.");
+    }
+
+    String originalFilename =
+        (file.getOriginalFilename() != null && !file.getOriginalFilename().isBlank())
+            ? sanitizeFilename(file.getOriginalFilename())
+            : "snippet.prs";
+
+    String key = UUID.randomUUID() + "-" + originalFilename;
+    byte[] content = readFileContent(file);
+    validateLanguage(language, version, content);
+
+    return assetClient.uploadSnippet(snippetsContainer, key, content, file.getContentType());
+  }
+
+  private byte[] readFileContent(MultipartFile file) {
+    try {
+      return file.getBytes();
+    } catch (IOException e) {
+      throw new IllegalStateException("No se pudo leer el contenido del archivo del snippet.", e);
     }
   }
 

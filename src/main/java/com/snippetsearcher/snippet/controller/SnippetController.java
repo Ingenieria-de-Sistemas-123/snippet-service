@@ -64,12 +64,13 @@ public class SnippetController {
     return snippetService.getSnippet(jwt, snippetId);
   }
 
-  @PutMapping("/{id}")
+  @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public SnippetResponse updateSnippet(
       @AuthenticationPrincipal Jwt jwt,
       @PathVariable("id") UUID snippetId,
-      @Valid @RequestBody UpdateSnippetRequest request) {
-    return snippetService.updateSnippet(jwt, snippetId, request);
+      @RequestPart("file") MultipartFile file,
+      @Valid @RequestPart("request") UpdateSnippetRequest request) {
+    return snippetService.updateSnippet(jwt, snippetId, request, file);
   }
 
   @DeleteMapping("/{id}")
