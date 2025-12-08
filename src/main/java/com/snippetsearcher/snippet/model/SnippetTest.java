@@ -27,8 +27,7 @@ public class SnippetTest {
   @Column(length = 1000)
   private String description;
 
-  @Lob
-  @Column(name = "script", nullable = false)
+  @Column(name = "script", nullable = false, columnDefinition = "TEXT")
   private String script;
 
   @Column(name = "last_run_at")
@@ -38,10 +37,9 @@ public class SnippetTest {
   private Integer lastRunExitCode;
 
   @Lob
-  @Column(name = "last_run_output")
+  @Column(name = "last_run_output", columnDefinition = "TEXT")
   private String lastRunOutput;
 
-  @Lob
-  @Column(name = "last_run_error")
+  @Column(name = "last_run_error", columnDefinition = "TEXT")
   private String lastRunError;
 }
