@@ -2,7 +2,6 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
-import com.snippetsearcher.snippet.dto.LanguageDtos;
 import com.snippetsearcher.snippet.dto.PermissionTypeDto;
 import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
 import com.snippetsearcher.snippet.dto.UserAccountDto;
@@ -14,19 +13,17 @@ import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetLintErrorResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetListItemResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetTestResponse;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
+import com.snippetsearcher.snippet.jobs.SnippetJobProducer;
 import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
-import com.snippetsearcher.snippet.model.SnippetTest;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
 import com.snippetsearcher.snippet.repository.SnippetTestRepository;
 import com.snippetsearcher.snippet.repository.specification.SnippetSpecifications;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +53,7 @@ public class SnippetService {
   private final LanguageValidationService languageValidationService;
   private final LanguageClient languageClient;
   private final SnippetTestRepository snippetTestRepository;
+  private final SnippetJobProducer jobProducer; // 👈 CAMPO NUEVO
   private final String snippetsContainer;
 
   public SnippetService(
@@ -65,6 +63,7 @@ public class SnippetService {
       LanguageValidationService languageValidationService,
       LanguageClient languageClient,
       SnippetTestRepository snippetTestRepository,
+      SnippetJobProducer jobProducer, // 👈 PARÁMETRO NUEVO
       @Value("${asset-service.snippets-container:snippets}") String snippetsContainer) {
     this.snippetRepository = snippetRepository;
     this.assetClient = assetClient;
@@ -72,6 +71,7 @@ public class SnippetService {
     this.languageValidationService = languageValidationService;
     this.languageClient = languageClient;
     this.snippetTestRepository = snippetTestRepository;
+    this.jobProducer = jobProducer; // 👈 ASIGNACIÓN
     this.snippetsContainer = snippetsContainer;
   }
 
@@ -177,6 +177,12 @@ public class SnippetService {
     snippet.setAssetKey(assetKey);
     markSnippetValid(snippet);
     snippet = snippetRepository.save(snippet);
+
+    // 👉 Use case: testing automático.
+    // No bloqueamos el update: solo encolamos un job para que un worker
+    // corra TODOS los tests de este snippet en background.
+    jobProducer.enqueueRunAllTestsForSnippet(snippet.getId());
+
     return SnippetResponse.fromEntity(snippet);
   }
 
@@ -203,29 +209,8 @@ public class SnippetService {
     return SnippetResponse.fromEntity(snippet);
   }
 
-  @Transactional
-  public SnippetTestExecutionResponse executeSnippetTest(Jwt jwt, UUID snippetId, UUID testId) {
-    UserAccountDto user = ensureUser(jwt);
-    Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
-    SnippetTest test =
-        snippetTestRepository
-            .findByIdAndSnippetId(testId, snippet.getId())
-            .orElseThrow(() -> new IllegalArgumentException("El test indicado no existe."));
-
-    String snippetContent = downloadSnippetContent(snippet);
-    String executableContent = buildExecutableContent(snippetContent, test.getScript());
-    LanguageDtos.ExecuteResponse response = executeTest(snippet, executableContent);
-    updateTestResult(test, response);
-    snippetTestRepository.save(test);
-
-    boolean passed = response.exitCode() == 0;
-    return new SnippetTestExecutionResponse(
-        test.getId(),
-        passed,
-        response.exitCode(),
-        response.stdout(),
-        response.stderr(),
-        test.getLastRunAt());
+  public UserAccountDto ensureUserForController(Jwt jwt) {
+    return ensureUser(jwt);
   }
 
   private String uploadValidatedSnippetContent(
@@ -292,30 +277,6 @@ public class SnippetService {
     return validation.errors().stream()
         .map(e -> new SnippetLintErrorResponse(e.rule(), e.line(), e.col(), e.message()))
         .toList();
-  }
-
-  private String buildExecutableContent(String snippetContent, String testScript) {
-    if (!StringUtils.hasText(testScript)) {
-      throw new IllegalArgumentException("El script del test es obligatorio.");
-    }
-    return snippetContent + System.lineSeparator() + System.lineSeparator() + testScript;
-  }
-
-  private LanguageDtos.ExecuteResponse executeTest(Snippet snippet, String executableContent) {
-    try {
-      return languageClient.execute(
-          new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent));
-    } catch (Exception ex) {
-      throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
-    }
-  }
-
-  private void updateTestResult(SnippetTest test, LanguageDtos.ExecuteResponse response) {
-    test.setLastRunAt(OffsetDateTime.now());
-    test.setLastRunExitCode(response.exitCode());
-    test.setLastRunOutput(response.stdout());
-    test.setLastRunError(response.stderr());
   }
 
   private Specification<Snippet> buildSpecification(

@@ -18,6 +18,10 @@ spring:
         jwt:
           # para local podés hardcodear o usar env var
           issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:https://dev-7t5evioih4aq30t7.us.auth0.com/}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 management:
   endpoints:
