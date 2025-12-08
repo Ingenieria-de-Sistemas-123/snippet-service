@@ -2,7 +2,10 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
+import com.snippetsearcher.snippet.dto.PermissionTypeDto;
+import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
 import com.snippetsearcher.snippet.dto.UserAccountDto;
+import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
@@ -11,17 +14,23 @@ import com.snippetsearcher.snippet.dto.response.SnippetListItemResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
 import com.snippetsearcher.snippet.model.Snippet;
+import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
+import com.snippetsearcher.snippet.repository.specification.SnippetSpecifications;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +84,7 @@ public class SnippetService {
             request.description(),
             assetKey,
             userId);
+    markSnippetValid(snippet);
     snippet = snippetRepository.save(snippet);
 
     // 4) Crear permiso OWNER en permission-service
@@ -85,22 +95,39 @@ public class SnippetService {
   }
 
   @Transactional(readOnly = true)
-  public ListSnippetsResponse listSnippets(Jwt jwt, int page, int pageSize, String nameFilter) {
+  public ListSnippetsResponse listSnippets(Jwt jwt, ListSnippetsQuery query) {
     UserAccountDto user = ensureUser(jwt);
-    Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    List<SnippetPermissionDto> sharedPermissions =
+        query.relation().includesShared() ? loadSnippetPermissions(jwt) : List.of();
 
-    var snippetsPage =
-        StringUtils.hasText(nameFilter)
-            ? snippetRepository.findByOwnerUserIdAndNameContainingIgnoreCase(
-                user.id(), nameFilter.trim(), pageable)
-            : snippetRepository.findByOwnerUserId(user.id(), pageable);
+    Set<UUID> sharedSnippetIds =
+        sharedPermissions.stream()
+            .filter(dto -> dto.type() == PermissionTypeDto.SHARED)
+            .map(SnippetPermissionDto::snippetId)
+            .collect(Collectors.toSet());
+
+    Specification<Snippet> specification =
+        buildSpecification(user.id(), query, sharedSnippetIds);
+
+    Pageable pageable = PageRequest.of(query.page(), query.pageSize(), query.sort());
+    var snippetsPage = snippetRepository.findAll(specification, pageable);
+
+    Map<UUID, PermissionTypeDto> relationLookup =
+        sharedPermissions.stream()
+            .collect(
+                Collectors.toMap(
+                    SnippetPermissionDto::snippetId,
+                    SnippetPermissionDto::type,
+                    (existing, ignored) -> existing));
 
     List<SnippetListItemResponse> items =
         snippetsPage.getContent().stream()
             .map(
                 snippet ->
                     SnippetListItemResponse.fromEntity(
-                        snippet, extractExtension(snippet.getAssetKey())))
+                        snippet,
+                        extractExtension(snippet.getAssetKey()),
+                        determineRelation(snippet, user.id(), relationLookup)))
             .toList();
 
     return new ListSnippetsResponse(
@@ -124,6 +151,7 @@ public class SnippetService {
     snippet.setDescription(request.description());
     snippet.setVersion(request.version());
     snippet.setAssetKey(assetKey);
+    markSnippetValid(snippet);
     snippet = snippetRepository.save(snippet);
     return SnippetResponse.fromEntity(snippet);
   }
@@ -204,6 +232,53 @@ public class SnippetService {
     } catch (IOException e) {
       throw new IllegalStateException("No se pudo leer el contenido del archivo del snippet.", e);
     }
+  }
+
+  private Specification<Snippet> buildSpecification(
+      UUID userId, ListSnippetsQuery query, Set<UUID> sharedSnippetIds) {
+    Specification<Snippet> relationSpec =
+        switch (query.relation()) {
+          case OWNED -> SnippetSpecifications.ownedBy(userId);
+          case SHARED -> SnippetSpecifications.withIds(sharedSnippetIds);
+          case ALL -> {
+            Specification<Snippet> ownerSpec = SnippetSpecifications.ownedBy(userId);
+            Specification<Snippet> sharedSpec = SnippetSpecifications.withIds(sharedSnippetIds);
+            yield sharedSnippetIds.isEmpty() ? ownerSpec : ownerSpec.or(sharedSpec);
+          }
+        };
+
+    Specification<Snippet> spec = Specification.where(relationSpec);
+    spec = and(spec, SnippetSpecifications.nameContains(query.name()));
+    spec = and(spec, SnippetSpecifications.languageEquals(query.language()));
+    spec = and(spec, SnippetSpecifications.withComplianceStatus(query.complianceFilter()));
+    return spec;
+  }
+
+  private Specification<Snippet> and(
+      Specification<Snippet> base, Specification<Snippet> addition) {
+    return addition == null ? base : base.and(addition);
+  }
+
+  private PermissionTypeDto determineRelation(
+      Snippet snippet, UUID currentUserId, Map<UUID, PermissionTypeDto> relationLookup) {
+    if (snippet.getOwnerUserId() != null && snippet.getOwnerUserId().equals(currentUserId)) {
+      return PermissionTypeDto.OWNER;
+    }
+    return relationLookup.getOrDefault(snippet.getId(), PermissionTypeDto.SHARED);
+  }
+
+  private List<SnippetPermissionDto> loadSnippetPermissions(Jwt jwt) {
+    try {
+      return permissionClient.listSnippetPermissions(jwt.getTokenValue());
+    } catch (RestClientException | IllegalStateException ex) {
+      log.warn("No se pudo obtener snippets compartidos del permission-service: {}", ex.getMessage());
+      return List.of();
+    }
+  }
+
+  private void markSnippetValid(Snippet snippet) {
+    snippet.setComplianceStatus(SnippetComplianceStatus.VALID);
+    snippet.setComplianceMessage(null);
   }
 
   private UserAccountDto ensureUser(Jwt jwt) {

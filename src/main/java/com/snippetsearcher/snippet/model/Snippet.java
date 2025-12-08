@@ -35,6 +35,13 @@ public class Snippet {
   @Column(name = "owner_user_id", nullable = false, columnDefinition = "uuid")
   private UUID ownerUserId;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "compliance_status", nullable = false, length = 20)
+  private SnippetComplianceStatus complianceStatus = SnippetComplianceStatus.UNKNOWN;
+
+  @Column(name = "compliance_message", length = 500)
+  private String complianceMessage;
+
   @Column(name = "created_at", nullable = false)
   private OffsetDateTime createdAt = OffsetDateTime.now();
 
@@ -58,6 +65,7 @@ public class Snippet {
     this.description = description;
     this.assetKey = assetKey;
     this.ownerUserId = ownerUserId;
+    this.complianceStatus = SnippetComplianceStatus.VALID;
   }
 
   @PreUpdate

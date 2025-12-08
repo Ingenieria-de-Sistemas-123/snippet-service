@@ -2,6 +2,7 @@ package com.snippetsearcher.snippet.controller;
 
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Validated
@@ -54,8 +56,19 @@ public class SnippetController {
       @AuthenticationPrincipal Jwt jwt,
       @RequestParam(defaultValue = "0") @Min(0) int page,
       @RequestParam(name = "page_size", defaultValue = "10") @Min(1) @Max(100) int pageSize,
-      @RequestParam(required = false) String name) {
-    return snippetService.listSnippets(jwt, page, pageSize, name);
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) String language,
+      @RequestParam(required = false) Boolean valid,
+      @RequestParam(defaultValue = "all") String relation,
+      @RequestParam(name = "sort_by", defaultValue = "updated_at") String sortBy,
+      @RequestParam(name = "sort_dir", defaultValue = "desc") String sortDir) {
+    try {
+      ListSnippetsQuery query =
+          ListSnippetsQuery.from(page, pageSize, name, language, valid, relation, sortBy, sortDir);
+      return snippetService.listSnippets(jwt, query);
+    } catch (IllegalArgumentException ex) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+    }
   }
 
   @GetMapping("/{id}")
