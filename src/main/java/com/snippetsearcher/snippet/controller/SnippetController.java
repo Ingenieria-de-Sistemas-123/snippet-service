@@ -8,6 +8,7 @@ import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
 import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
 import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
 import jakarta.validation.Valid;
@@ -98,6 +99,14 @@ public class SnippetController {
       @PathVariable("id") UUID snippetId,
       @Valid @RequestBody ShareSnippetRequest request) {
     return snippetService.shareSnippet(jwt, snippetId, request);
+  }
+
+  @PostMapping("/{id}/tests/{testId}/execute")
+  public SnippetTestExecutionResponse executeSnippetTest(
+      @AuthenticationPrincipal Jwt jwt,
+      @PathVariable("id") UUID snippetId,
+      @PathVariable("testId") UUID testId) {
+    return snippetService.executeSnippetTest(jwt, snippetId, testId);
   }
 
   @PostMapping("/format")
