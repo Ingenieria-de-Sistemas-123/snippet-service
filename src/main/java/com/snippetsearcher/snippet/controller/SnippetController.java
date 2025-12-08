@@ -4,7 +4,6 @@ import com.snippetsearcher.snippet.dto.request.*;
 import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
 import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
-import com.snippetsearcher.snippet.service.Auth0Service;
 import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
 import jakarta.validation.Valid;
@@ -28,13 +27,12 @@ public class SnippetController {
 
   private final SnippetService snippetService;
   private final SnippetLanguageService snippetLanguageService;
-  private final Auth0Service auth0Service;
+
 
   public SnippetController(
-          SnippetService snippetService, SnippetLanguageService snippetLanguageService, Auth0Service auth0Service) {
+          SnippetService snippetService, SnippetLanguageService snippetLanguageService) {
     this.snippetService = snippetService;
     this.snippetLanguageService = snippetLanguageService;
-    this.auth0Service = auth0Service;
   }
 
   /**
@@ -84,8 +82,8 @@ public class SnippetController {
   public SnippetResponse shareSnippet(
           @AuthenticationPrincipal Jwt jwt,
           @PathVariable("id") UUID snippetId,
-          @Valid @RequestBody ShareSnippetDTO request
-  ) {
+          @Valid @RequestBody ShareSnippetRequest request) {
+
     return snippetService.shareSnippet(jwt, snippetId, request);
   }
 
