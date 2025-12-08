@@ -234,18 +234,16 @@ public class SnippetService {
 
   private Specification<Snippet> buildSpecification(
       UUID userId, ListSnippetsQuery query, Set<UUID> sharedSnippetIds) {
-    Specification<Snippet> relationSpec =
-        switch (query.relation()) {
-          case OWNED -> SnippetSpecifications.ownedBy(userId);
-          case SHARED -> SnippetSpecifications.withIds(sharedSnippetIds);
-          case ALL -> {
-            Specification<Snippet> ownerSpec = SnippetSpecifications.ownedBy(userId);
-            Specification<Snippet> sharedSpec = SnippetSpecifications.withIds(sharedSnippetIds);
-            yield sharedSnippetIds.isEmpty() ? ownerSpec : ownerSpec.or(sharedSpec);
-          }
-        };
 
-    Specification<Snippet> spec = relationSpec;
+      Specification<Snippet> spec = switch (query.relation()) {
+        case OWNED -> SnippetSpecifications.ownedBy(userId);
+        case SHARED -> SnippetSpecifications.withIds(sharedSnippetIds);
+        case ALL -> {
+          Specification<Snippet> ownerSpec = SnippetSpecifications.ownedBy(userId);
+          Specification<Snippet> sharedSpec = SnippetSpecifications.withIds(sharedSnippetIds);
+          yield sharedSnippetIds.isEmpty() ? ownerSpec : ownerSpec.or(sharedSpec);
+        }
+      };
     spec = and(spec, SnippetSpecifications.nameContains(query.name()));
     spec = and(spec, SnippetSpecifications.languageEquals(query.language()));
     spec = and(spec, SnippetSpecifications.withComplianceStatus(query.complianceFilter()));
