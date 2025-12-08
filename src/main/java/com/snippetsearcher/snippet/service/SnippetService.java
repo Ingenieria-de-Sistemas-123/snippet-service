@@ -4,7 +4,7 @@ import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
 import com.snippetsearcher.snippet.dto.UserAccountDto;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
-import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.ShareSnippetDTO;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetListItemResponse;
@@ -147,20 +147,41 @@ public class SnippetService {
   }
 
   @Transactional
-  public SnippetResponse shareSnippet(Jwt jwt, UUID snippetId, ShareSnippetRequest request) {
-    if (request == null || request.userId() == null) {
-      throw new IllegalArgumentException("El usuario destino es obligatorio.");
+  public SnippetResponse shareSnippet(Jwt jwt, UUID snippetId, ShareSnippetDTO request) {
+    if (request == null || request.friendId() == null || request.friendId().isBlank()) {
+      throw new IllegalArgumentException("El usuario destino (friendId) es obligatorio.");
     }
+
     UserAccountDto user = ensureUser(jwt);
     Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
 
-    if (request.userId().equals(snippet.getOwnerUserId())) {
+    String ownerAuth0Sub = user.auth0Sub();
+
+    if (!StringUtils.hasText(ownerAuth0Sub)) {
+      ownerAuth0Sub = jwt.getClaimAsString("sub");
+      if (!StringUtils.hasText(ownerAuth0Sub)) {
+        ownerAuth0Sub = jwt.getSubject();
+      }
+      if (!StringUtils.hasText(ownerAuth0Sub)) {
+        ownerAuth0Sub = jwt.getClaimAsString("email");
+      }
+      if (!StringUtils.hasText(ownerAuth0Sub)) {
+        ownerAuth0Sub = "anonymous";
+      }
+    }
+
+    if (request.friendId().equals(ownerAuth0Sub)) {
       throw new IllegalArgumentException("No se puede compartir con el dueño del snippet.");
     }
 
-    createSharedPermission(jwt, snippetId, request.userId());
+    UUID targetUserId = UUID.nameUUIDFromBytes(
+            request.friendId().getBytes(StandardCharsets.UTF_8)
+    );
+    createSharedPermission(jwt, snippetId, targetUserId);
+
     return SnippetResponse.fromEntity(snippet);
   }
+
 
   private void validateLanguage(CreateSnippetRequest request, byte[] content) {
     var validation =

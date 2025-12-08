@@ -1,12 +1,10 @@
 package com.snippetsearcher.snippet.controller;
 
-import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
-import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
-import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
-import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.*;
 import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
 import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetResponse;
+import com.snippetsearcher.snippet.service.Auth0Service;
 import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
 import jakarta.validation.Valid;
@@ -15,6 +13,8 @@ import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
@@ -28,11 +28,13 @@ public class SnippetController {
 
   private final SnippetService snippetService;
   private final SnippetLanguageService snippetLanguageService;
+  private final Auth0Service auth0Service;
 
   public SnippetController(
-      SnippetService snippetService, SnippetLanguageService snippetLanguageService) {
+          SnippetService snippetService, SnippetLanguageService snippetLanguageService, Auth0Service auth0Service) {
     this.snippetService = snippetService;
     this.snippetLanguageService = snippetLanguageService;
+    this.auth0Service = auth0Service;
   }
 
   /**
@@ -80,9 +82,10 @@ public class SnippetController {
 
   @PostMapping("/{id}/share")
   public SnippetResponse shareSnippet(
-      @AuthenticationPrincipal Jwt jwt,
-      @PathVariable("id") UUID snippetId,
-      @Valid @RequestBody ShareSnippetRequest request) {
+          @AuthenticationPrincipal Jwt jwt,
+          @PathVariable("id") UUID snippetId,
+          @Valid @RequestBody ShareSnippetDTO request
+  ) {
     return snippetService.shareSnippet(jwt, snippetId, request);
   }
 
