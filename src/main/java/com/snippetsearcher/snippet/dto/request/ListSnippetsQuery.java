@@ -50,9 +50,7 @@ public record ListSnippetsQuery(
     if (valid == null) {
       return null;
     }
-    return Boolean.TRUE.equals(valid)
-        ? SnippetComplianceStatus.VALID
-        : SnippetComplianceStatus.INVALID;
+    return valid ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
   }
 
   private static Sort.Direction parseDirection(String value) {
@@ -62,7 +60,8 @@ public record ListSnippetsQuery(
     try {
       return Sort.Direction.valueOf(value.trim().toUpperCase());
     } catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException("Parámetro sort_dir inválido. Valores permitidos: asc, desc.");
+      throw new IllegalArgumentException(
+          "Parámetro sort_dir inválido. Valores permitidos: asc, desc.");
     }
   }
 
@@ -117,8 +116,7 @@ public record ListSnippetsQuery(
         return UPDATED_AT;
       }
       try {
-        String normalized =
-            value.trim().replace('-', '_').replace(' ', '_').toUpperCase();
+        String normalized = value.trim().replace('-', '_').replace(' ', '_').toUpperCase();
         if ("UPDATEDAT".equals(normalized)) {
           normalized = "UPDATED_AT";
         }

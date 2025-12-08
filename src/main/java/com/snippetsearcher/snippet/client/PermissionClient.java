@@ -55,7 +55,8 @@ public class PermissionClient {
   }
 
   /**
-   * Retorna la lista de snippets a los que el usuario autenticado tiene acceso y su tipo de permiso.
+   * Retorna la lista de snippets a los que el usuario autenticado tiene acceso y su tipo de
+   * permiso.
    */
   public List<SnippetPermissionDto> listSnippetPermissions(String bearerToken) {
     HttpHeaders headers = new HttpHeaders();

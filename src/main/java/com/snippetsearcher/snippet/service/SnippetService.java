@@ -5,8 +5,8 @@ import com.snippetsearcher.snippet.client.PermissionClient;
 import com.snippetsearcher.snippet.dto.PermissionTypeDto;
 import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
 import com.snippetsearcher.snippet.dto.UserAccountDto;
-import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -106,8 +105,7 @@ public class SnippetService {
             .map(SnippetPermissionDto::snippetId)
             .collect(Collectors.toSet());
 
-    Specification<Snippet> specification =
-        buildSpecification(user.id(), query, sharedSnippetIds);
+    Specification<Snippet> specification = buildSpecification(user.id(), query, sharedSnippetIds);
 
     Pageable pageable = PageRequest.of(query.page(), query.pageSize(), query.sort());
     var snippetsPage = snippetRepository.findAll(specification, pageable);
@@ -247,15 +245,14 @@ public class SnippetService {
           }
         };
 
-    Specification<Snippet> spec = Specification.where(relationSpec);
+    Specification<Snippet> spec = relationSpec;
     spec = and(spec, SnippetSpecifications.nameContains(query.name()));
     spec = and(spec, SnippetSpecifications.languageEquals(query.language()));
     spec = and(spec, SnippetSpecifications.withComplianceStatus(query.complianceFilter()));
     return spec;
   }
 
-  private Specification<Snippet> and(
-      Specification<Snippet> base, Specification<Snippet> addition) {
+  private Specification<Snippet> and(Specification<Snippet> base, Specification<Snippet> addition) {
     return addition == null ? base : base.and(addition);
   }
 
@@ -271,7 +268,8 @@ public class SnippetService {
     try {
       return permissionClient.listSnippetPermissions(jwt.getTokenValue());
     } catch (RestClientException | IllegalStateException ex) {
-      log.warn("No se pudo obtener snippets compartidos del permission-service: {}", ex.getMessage());
+      log.warn(
+          "No se pudo obtener snippets compartidos del permission-service: {}", ex.getMessage());
       return List.of();
     }
   }
