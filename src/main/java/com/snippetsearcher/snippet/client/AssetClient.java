@@ -3,6 +3,7 @@ package com.snippetsearcher.snippet.client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -46,5 +47,26 @@ public class AssetClient {
 
     // Este "assetKey" es lo que vamos a guardar en la tabla de snippets.
     return container + "/" + key;
+  }
+
+  public byte[] downloadSnippet(String assetKey) {
+    if (!StringUtils.hasText(assetKey)) {
+      throw new IllegalArgumentException("El assetKey del snippet es obligatorio.");
+    }
+
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+    ResponseEntity<byte[]> response =
+        restTemplate.exchange(
+            baseUrl + "/v1/asset/" + assetKey, HttpMethod.GET, entity, byte[].class);
+
+    if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+      throw new IllegalStateException(
+          "No se pudo descargar el snippet desde asset-service. Status="
+              + response.getStatusCode());
+    }
+
+    return response.getBody();
   }
 }

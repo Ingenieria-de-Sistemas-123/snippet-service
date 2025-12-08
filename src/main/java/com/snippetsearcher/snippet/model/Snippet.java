@@ -23,6 +23,9 @@ public class Snippet {
   @Column(nullable = false, length = 50)
   private String language;
 
+  @Column(nullable = false, length = 20)
+  private String version;
+
   @Column(length = 1000)
   private String description;
 
@@ -31,6 +34,13 @@ public class Snippet {
 
   @Column(name = "owner_user_id", nullable = false, columnDefinition = "uuid")
   private UUID ownerUserId;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "compliance_status", nullable = false, length = 20)
+  private SnippetComplianceStatus complianceStatus = SnippetComplianceStatus.UNKNOWN;
+
+  @Column(name = "compliance_message", length = 500)
+  private String complianceMessage;
 
   @Column(name = "created_at", nullable = false)
   private OffsetDateTime createdAt = OffsetDateTime.now();
@@ -43,12 +53,19 @@ public class Snippet {
   }
 
   public Snippet(
-      String name, String language, String description, String assetKey, UUID ownerUserId) {
+      String name,
+      String language,
+      String version,
+      String description,
+      String assetKey,
+      UUID ownerUserId) {
     this.name = name;
     this.language = language;
+    this.version = version;
     this.description = description;
     this.assetKey = assetKey;
     this.ownerUserId = ownerUserId;
+    this.complianceStatus = SnippetComplianceStatus.VALID;
   }
 
   @PreUpdate

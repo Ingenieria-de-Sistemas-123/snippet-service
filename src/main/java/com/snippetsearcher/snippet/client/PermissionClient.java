@@ -1,8 +1,11 @@
 package com.snippetsearcher.snippet.client;
 
 import com.snippetsearcher.snippet.dto.PermissionTypeDto;
+import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
 import com.snippetsearcher.snippet.dto.UserAccountDto;
 import com.snippetsearcher.snippet.dto.request.CreatePermissionRequestDto;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -49,6 +52,29 @@ public class PermissionClient {
   /** Crea un permiso compartido. */
   public void createSharedPermission(String bearerToken, UUID snippetId, UUID targetUserId) {
     createPermission(bearerToken, snippetId, targetUserId, PermissionTypeDto.SHARED);
+  }
+
+  /**
+   * Retorna la lista de snippets a los que el usuario autenticado tiene acceso y su tipo de
+   * permiso.
+   */
+  public List<SnippetPermissionDto> listSnippetPermissions(String bearerToken) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(bearerToken);
+
+    HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+    ResponseEntity<SnippetPermissionDto[]> response =
+        restTemplate.exchange(
+            baseUrl + "/api/me/snippets", HttpMethod.GET, entity, SnippetPermissionDto[].class);
+
+    if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+      throw new IllegalStateException(
+          "Error obteniendo snippets compartidos en permission-service. Status="
+              + response.getStatusCode());
+    }
+
+    return Arrays.asList(response.getBody());
   }
 
   private void createPermission(
