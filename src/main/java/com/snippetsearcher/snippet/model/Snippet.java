@@ -23,6 +23,9 @@ public class Snippet {
   @Column(nullable = false, length = 50)
   private String language;
 
+  @Column(nullable = false, length = 20)
+  private String version;
+
   @Column(length = 1000)
   private String description;
 
@@ -43,9 +46,15 @@ public class Snippet {
   }
 
   public Snippet(
-      String name, String language, String description, String assetKey, UUID ownerUserId) {
+      String name,
+      String language,
+      String version,
+      String description,
+      String assetKey,
+      UUID ownerUserId) {
     this.name = name;
     this.language = language;
+    this.version = version;
     this.description = description;
     this.assetKey = assetKey;
     this.ownerUserId = ownerUserId;

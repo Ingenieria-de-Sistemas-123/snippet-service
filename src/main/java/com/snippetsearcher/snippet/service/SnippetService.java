@@ -89,7 +89,13 @@ public class SnippetService {
 
     // 3) Crear snippet en DB local
     Snippet snippet =
-        new Snippet(request.name(), request.language(), request.description(), assetKey, userId);
+        new Snippet(
+            request.name(),
+            request.language(),
+            request.version(),
+            request.description(),
+            assetKey,
+            userId);
     snippet = snippetRepository.save(snippet);
 
     // 4) Crear permiso OWNER en permission-service
@@ -135,6 +141,7 @@ public class SnippetService {
     snippet.setName(request.name());
     snippet.setLanguage(request.language());
     snippet.setDescription(request.description());
+    snippet.setVersion(request.version());
     snippet = snippetRepository.save(snippet);
     return SnippetResponse.fromEntity(snippet);
   }
@@ -165,7 +172,7 @@ public class SnippetService {
   private void validateLanguage(CreateSnippetRequest request, byte[] content) {
     var validation =
         languageValidationService.validate(
-            request.language(), null, new String(content, StandardCharsets.UTF_8));
+            request.language(), request.version(), new String(content, StandardCharsets.UTF_8));
 
     if (validation != null && !validation.valid()) {
       var firstError =
@@ -174,10 +181,16 @@ public class SnippetService {
               : null;
 
       if (firstError != null) {
+        String violatedRule =
+            StringUtils.hasText(firstError.rule()) ? firstError.rule() : "desconocida";
         throw new IllegalArgumentException(
-            "El snippet no es válido para el lenguaje %s: %s (línea %d, columna %d)."
+            "El snippet no es válido para el lenguaje %s (regla %s): %s (línea %d, columna %d)."
                 .formatted(
-                    request.language(), firstError.message(), firstError.line(), firstError.col()));
+                    request.language(),
+                    violatedRule,
+                    firstError.message(),
+                    firstError.line(),
+                    firstError.col()));
       }
 
       throw new IllegalArgumentException(
