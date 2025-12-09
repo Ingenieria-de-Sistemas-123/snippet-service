@@ -17,7 +17,7 @@ import com.snippetsearcher.snippet.dto.response.SnippetResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetTestResponse;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
-import com.snippetsearcher.snippet.language.LanguageClient;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.model.SnippetTest;

@@ -3,7 +3,7 @@ package com.snippetsearcher.snippet.service;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
 import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
-import com.snippetsearcher.snippet.language.LanguageClient;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
