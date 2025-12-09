@@ -23,7 +23,7 @@ public class Snippet {
   @Column(nullable = false, length = 50)
   private String language;
 
-  @Column(nullable = false, length = 20)
+  @Column(length = 20)
   private String version;
 
   @Column(length = 1000)
