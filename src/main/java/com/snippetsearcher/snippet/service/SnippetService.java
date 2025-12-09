@@ -49,7 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SnippetService {
 
   private static final Logger log = LoggerFactory.getLogger(SnippetService.class);
-  private static final String DEFAULT_VERSION = "unspecified";
+  private static final String UNSPECIFIED_VERSION_VALUE = "unspecified";
 
   private final SnippetRepository snippetRepository;
   private final AssetClient assetClient;
@@ -172,11 +172,15 @@ public class SnippetService {
       Jwt jwt, UUID snippetId, UpdateSnippetRequest request, MultipartFile file) {
     UserAccountDto user = ensureUser(jwt);
     Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
-    String assetKey = uploadValidatedSnippetContent(file, request.language(), request.version());
-    snippet.setName(request.name());
+    String resolvedName = resolveUpdatedName(request);
+    String resolvedDescription = resolveUpdatedDescription(snippet, request);
+    String resolvedVersion = resolveUpdatedVersion(snippet, request);
+    String assetKey =
+        uploadValidatedSnippetContent(file, request.language(), resolvedVersion);
+    snippet.setName(resolvedName);
     snippet.setLanguage(request.language());
-    snippet.setDescription(request.description());
-    snippet.setVersion(request.version());
+    snippet.setDescription(resolvedDescription);
+    snippet.setVersion(resolvedVersion);
     snippet.setAssetKey(assetKey);
     markSnippetValid(snippet);
     snippet = snippetRepository.save(snippet);
@@ -287,7 +291,8 @@ public class SnippetService {
 
   private List<SnippetLintErrorResponse> collectLintErrors(
       String language, String version, String content) {
-    var validation = languageValidationService.validate(language, version, content);
+    var validation =
+        languageValidationService.validate(language, normalizeVersion(version), content);
     if (validation == null || validation.valid() || validation.errors() == null) {
       return List.of();
     }
@@ -308,7 +313,9 @@ public class SnippetService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent));
+              snippet.getLanguage(),
+              normalizeVersion(snippet.getVersion()),
+              executableContent));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
@@ -322,11 +329,34 @@ public class SnippetService {
   }
 
   private String normalizeVersion(String version) {
-    return StringUtils.hasText(version) ? version.trim() : DEFAULT_VERSION;
+    if (!StringUtils.hasText(version)) {
+      return null;
+    }
+    String trimmed = version.trim();
+    return UNSPECIFIED_VERSION_VALUE.equalsIgnoreCase(trimmed) ? null : trimmed;
   }
 
   private String normalizeDescription(String description) {
     return StringUtils.hasText(description) ? description.trim() : null;
+  }
+
+  private String resolveUpdatedName(UpdateSnippetRequest request) {
+    if (!StringUtils.hasText(request.name())) {
+      throw new IllegalArgumentException("El nombre es obligatorio.");
+    }
+    return request.name().trim();
+  }
+
+  private String resolveUpdatedDescription(Snippet snippet, UpdateSnippetRequest request) {
+    return request.description() == null
+        ? snippet.getDescription()
+        : normalizeDescription(request.description());
+  }
+
+  private String resolveUpdatedVersion(Snippet snippet, UpdateSnippetRequest request) {
+    return request.version() == null
+        ? normalizeVersion(snippet.getVersion())
+        : normalizeVersion(request.version());
   }
 
   private Specification<Snippet> buildSpecification(
