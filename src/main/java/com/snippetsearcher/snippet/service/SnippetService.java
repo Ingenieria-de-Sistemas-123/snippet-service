@@ -2,6 +2,7 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
 import com.snippetsearcher.snippet.dto.PermissionTypeDto;
 import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
@@ -17,7 +18,6 @@ import com.snippetsearcher.snippet.dto.response.SnippetResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetTestResponse;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
-import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.model.SnippetTest;
