@@ -162,7 +162,7 @@ public class SnippetService {
             .toList();
     SnippetComplianceStatus complianceStatus =
         lintErrors.isEmpty() ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
-    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.get(0).message();
+    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.getFirst().message();
     return SnippetResponse.fromEntity(
         snippet, content, lintErrors, tests, complianceStatus, complianceMessage);
   }
@@ -175,8 +175,7 @@ public class SnippetService {
     String resolvedName = resolveUpdatedName(request);
     String resolvedDescription = resolveUpdatedDescription(snippet, request);
     String resolvedVersion = resolveUpdatedVersion(snippet, request);
-    String assetKey =
-        uploadValidatedSnippetContent(file, request.language(), resolvedVersion);
+    String assetKey = uploadValidatedSnippetContent(file, request.language(), resolvedVersion);
     snippet.setName(resolvedName);
     snippet.setLanguage(request.language());
     snippet.setDescription(resolvedDescription);
@@ -266,7 +265,7 @@ public class SnippetService {
         collectLintErrors(language, version, new String(content, StandardCharsets.UTF_8));
 
     if (!errors.isEmpty()) {
-      SnippetLintErrorResponse firstError = errors.get(0);
+      SnippetLintErrorResponse firstError = errors.getFirst();
       String violatedRule =
           StringUtils.hasText(firstError.rule()) ? firstError.rule() : "desconocida";
       throw new IllegalArgumentException(
@@ -313,9 +312,7 @@ public class SnippetService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(),
-              normalizeVersion(snippet.getVersion()),
-              executableContent));
+              snippet.getLanguage(), normalizeVersion(snippet.getVersion()), executableContent));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
