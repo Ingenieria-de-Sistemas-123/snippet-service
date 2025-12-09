@@ -2,20 +2,12 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
-import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.dto.PermissionTypeDto;
-import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
-import com.snippetsearcher.snippet.dto.UserAccountDto;
+import com.snippetsearcher.snippet.dto.*;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
-import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetLintErrorResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetListItemResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetTestResponse;
+import com.snippetsearcher.snippet.dto.response.*;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
 import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
@@ -202,6 +194,30 @@ public class SnippetService {
     createSharedPermission(jwt, snippetId, request.userId());
     return SnippetResponse.fromEntity(snippet);
   }
+
+  @Transactional
+  public List<FriendsResponse> getFriends(Jwt jwt) {
+    var user = ensureUser(jwt);
+
+    try {
+      List<PermissionUserDto> users = permissionClient.getUsers(jwt.getTokenValue());
+      UUID currentUserId = user.id();
+
+      return users.stream()
+              .filter(u -> !currentUserId.equals(u.id()))
+              .map(u -> new FriendsResponse(
+                      u.id().toString(),     // UUID → string
+                      u.name(),
+                      u.email()
+              ))
+              .toList();
+
+    } catch (RestClientException | IllegalStateException ex) {
+      log.warn("No se pudo obtener la lista de amigos: {}", ex.getMessage());
+      return List.of();
+    }
+  }
+
 
   @Transactional
   public SnippetTestExecutionResponse executeSnippetTest(Jwt jwt, UUID snippetId, UUID testId) {
