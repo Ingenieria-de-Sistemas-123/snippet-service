@@ -100,6 +100,12 @@ public class SnippetController {
     return snippetService.shareSnippet(jwt, snippetId, request);
   }
 
+  @GetMapping("/users")
+  public List<FriendsResponse> getUsers(
+          @AuthenticationPrincipal Jwt jwt
+  ) {
+    return snippetService.getFriends(jwt);
+  }
 
   @PostMapping("/{id}/tests/{testId}/execute")
   public SnippetTestExecutionResponse executeSnippetTest(
@@ -112,10 +118,5 @@ public class SnippetController {
   @PostMapping("/format")
   public FormatSnippetResponse formatSnippet(@Valid @RequestBody FormatSnippetRequest request) {
     return snippetLanguageService.formatSnippet(request);
-  }
-
-  @GetMapping("/users")
-  public List<FriendsResponse> getUserSnippets(@AuthenticationPrincipal Jwt jwt) {
-    return snippetService.getFriends(jwt);
   }
 }

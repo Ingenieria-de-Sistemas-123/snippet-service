@@ -7,4 +7,3 @@ public record PermissionUserDto(
         String name,
         String email
 ) {}
-

@@ -218,7 +218,6 @@ public class SnippetService {
     }
   }
 
-
   @Transactional
   public SnippetTestExecutionResponse executeSnippetTest(Jwt jwt, UUID snippetId, UUID testId) {
     UserAccountDto user = ensureUser(jwt);
