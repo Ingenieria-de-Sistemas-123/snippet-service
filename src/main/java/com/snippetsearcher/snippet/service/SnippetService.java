@@ -49,6 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SnippetService {
 
   private static final Logger log = LoggerFactory.getLogger(SnippetService.class);
+  private static final String DEFAULT_VERSION = "unspecified";
 
   private final SnippetRepository snippetRepository;
   private final AssetClient assetClient;
@@ -86,15 +87,17 @@ public class SnippetService {
     UUID userId = user.id();
 
     // 2) Validar y subir archivo a asset-service
-    String assetKey = uploadValidatedSnippetContent(file, request.language(), request.version());
+    String normalizedVersion = normalizeVersion(request.version());
+    String normalizedDescription = normalizeDescription(request.description());
+    String assetKey = uploadValidatedSnippetContent(file, request.language(), normalizedVersion);
 
     // 3) Crear snippet en DB local
     Snippet snippet =
         new Snippet(
             request.name(),
             request.language(),
-            request.version(),
-            request.description(),
+            normalizedVersion,
+            normalizedDescription,
             assetKey,
             userId);
     markSnippetValid(snippet);
@@ -316,6 +319,14 @@ public class SnippetService {
     test.setLastRunExitCode(response.exitCode());
     test.setLastRunOutput(response.stdout());
     test.setLastRunError(response.stderr());
+  }
+
+  private String normalizeVersion(String version) {
+    return StringUtils.hasText(version) ? version.trim() : DEFAULT_VERSION;
+  }
+
+  private String normalizeDescription(String description) {
+    return StringUtils.hasText(description) ? description.trim() : null;
   }
 
   private Specification<Snippet> buildSpecification(
