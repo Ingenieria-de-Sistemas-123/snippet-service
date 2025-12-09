@@ -140,21 +140,54 @@ public class SnippetService {
 
   @Transactional(readOnly = true)
   public SnippetResponse getSnippet(Jwt jwt, UUID snippetId) {
+    // 1) Usuario actual (también sincroniza en permission-service)
     UserAccountDto user = ensureUser(jwt);
-    Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
+    UUID userId = user.id();
+
+    // 2) Pedimos a permission-service qué snippets puede ver este usuario
+    var permissions = permissionClient.listSnippetPermissions(jwt.getTokenValue());
+
+    boolean hasAccess = permissions.stream()
+            .anyMatch(p -> p.snippetId().equals(snippetId));
+
+    if (!hasAccess) {
+      // Podés tirar tu propia excepción 404/403 si preferís
+      throw new IllegalStateException("Snippet no encontrado o sin permisos");
+    }
+
+    // 3) Cargamos el snippet desde la base (da igual si el permiso es OWNER o SHARED)
+    Snippet snippet = snippetRepository.findById(snippetId)
+            .orElseThrow(() -> new IllegalStateException("Snippet no encontrado"));
+
+    // 4) Lógica original: contenido, lint, tests, compliance
     String content = downloadSnippetContent(snippet);
+
     List<SnippetLintErrorResponse> lintErrors =
-        collectLintErrors(snippet.getLanguage(), snippet.getVersion(), content);
+            collectLintErrors(snippet.getLanguage(), snippet.getVersion(), content);
+
     List<SnippetTestResponse> tests =
-        snippetTestRepository.findBySnippetId(snippet.getId()).stream()
-            .map(SnippetTestResponse::fromEntity)
-            .toList();
+            snippetTestRepository.findBySnippetId(snippet.getId()).stream()
+                    .map(SnippetTestResponse::fromEntity)
+                    .toList();
+
     SnippetComplianceStatus complianceStatus =
-        lintErrors.isEmpty() ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
-    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.get(0).message();
+            lintErrors.isEmpty()
+                    ? SnippetComplianceStatus.VALID
+                    : SnippetComplianceStatus.INVALID;
+
+    String complianceMessage =
+            lintErrors.isEmpty() ? null : lintErrors.get(0).message();
+
     return SnippetResponse.fromEntity(
-        snippet, content, lintErrors, tests, complianceStatus, complianceMessage);
+            snippet,
+            content,
+            lintErrors,
+            tests,
+            complianceStatus,
+            complianceMessage
+    );
   }
+
 
   @Transactional
   public SnippetResponse updateSnippet(
