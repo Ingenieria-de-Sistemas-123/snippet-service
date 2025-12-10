@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/rules")
+@RequestMapping({"/api/rules", "/api/snippets/rules"})
 public class RulesController {
 
   private final FormattingRulesService formattingRulesService;

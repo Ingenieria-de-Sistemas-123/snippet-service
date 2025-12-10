@@ -1,10 +1,12 @@
 package com.snippetsearcher.snippet.jobs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
+import com.snippetsearcher.snippet.service.LintIssueFilter;
+import com.snippetsearcher.snippet.service.LintingRulesService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -25,18 +27,24 @@ public class LintWorker {
   private final SnippetRepository snippetRepository;
   private final com.snippetsearcher.snippet.client.AssetClient assetClient;
   private final LanguageClient languageClient;
+  private final LintingRulesService lintingRulesService;
+  private final LintIssueFilter lintIssueFilter;
 
   public LintWorker(
       RedisTemplate<String, String> redisTemplate,
       ObjectMapper objectMapper,
       SnippetRepository snippetRepository,
       com.snippetsearcher.snippet.client.AssetClient assetClient,
-      LanguageClient languageClient) {
+      LanguageClient languageClient,
+      LintingRulesService lintingRulesService,
+      LintIssueFilter lintIssueFilter) {
     this.redisTemplate = redisTemplate;
     this.objectMapper = objectMapper;
     this.snippetRepository = snippetRepository;
     this.assetClient = assetClient;
     this.languageClient = languageClient;
+    this.lintingRulesService = lintingRulesService;
+    this.lintIssueFilter = lintIssueFilter;
   }
 
   @Scheduled(fixedDelay = 2000)
@@ -68,6 +76,16 @@ public class LintWorker {
             languageClient.analyze(
                 new LanguageDtos.AnalyzeRequest(
                     snippet.getLanguage(), snippet.getVersion(), content));
+
+        List<LanguageDtos.AnalyzeIssue> filtered =
+            lintIssueFilter.filter(res.issues(), lintingRulesService.getLintingRules());
+
+        if (!filtered.isEmpty()) {
+          log.info(
+              "Lint issues for snippet {} after filtering active rules: {}",
+              snippet.getId(),
+              filtered.size());
+        }
 
       } catch (Exception ex) {
         log.error("Error linteando snippet {}. Se continúa.", snippet.getId(), ex);

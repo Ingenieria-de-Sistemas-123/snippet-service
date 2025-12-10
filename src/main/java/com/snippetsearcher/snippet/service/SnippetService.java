@@ -54,28 +54,31 @@ public class SnippetService {
   private final SnippetRepository snippetRepository;
   private final AssetClient assetClient;
   private final PermissionClient permissionClient;
-  private final LanguageValidationService languageValidationService;
   private final LanguageClient languageClient;
   private final SnippetTestRepository snippetTestRepository;
   private final SnippetJobProducer jobProducer;
+  private final LintingRulesService lintingRulesService;
+  private final LintIssueFilter lintIssueFilter;
   private final String snippetsContainer;
 
   public SnippetService(
       SnippetRepository snippetRepository,
       AssetClient assetClient,
       PermissionClient permissionClient,
-      LanguageValidationService languageValidationService,
       LanguageClient languageClient,
       SnippetTestRepository snippetTestRepository,
       SnippetJobProducer jobProducer,
+      LintingRulesService lintingRulesService,
+      LintIssueFilter lintIssueFilter,
       @Value("${asset-service.snippets-container:snippets}") String snippetsContainer) {
     this.snippetRepository = snippetRepository;
     this.assetClient = assetClient;
     this.permissionClient = permissionClient;
-    this.languageValidationService = languageValidationService;
     this.languageClient = languageClient;
     this.snippetTestRepository = snippetTestRepository;
     this.jobProducer = jobProducer;
+    this.lintingRulesService = lintingRulesService;
+    this.lintIssueFilter = lintIssueFilter;
     this.snippetsContainer = snippetsContainer;
   }
 
@@ -275,14 +278,19 @@ public class SnippetService {
 
   private List<SnippetLintErrorResponse> collectLintErrors(
       String language, String version, String content) {
-    var validation =
-        languageValidationService.validate(language, normalizeVersion(version), content);
-    if (validation == null || validation.valid() || validation.errors() == null) {
-      return List.of();
-    }
+    LanguageDtos.AnalyzeResponse response =
+        languageClient.analyze(
+            new LanguageDtos.AnalyzeRequest(language, normalizeVersion(version), content));
 
-    return validation.errors().stream()
-        .map(e -> new SnippetLintErrorResponse(e.rule(), e.line(), e.col(), e.message()))
+    List<LanguageDtos.AnalyzeIssue> filtered =
+        lintIssueFilter.filter(
+            response != null ? response.issues() : List.of(), lintingRulesService.getLintingRules());
+
+    return filtered.stream()
+        .map(
+            i ->
+                new SnippetLintErrorResponse(
+                    i.rule(), i.startLine(), i.startCol(), i.message()))
         .toList();
   }
 

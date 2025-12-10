@@ -1,4 +1,3 @@
-// src/main/java/com/snippetsearcher/snippet/rules/RulesFactory.java
 package com.snippetsearcher.snippet.rules;
 
 import java.util.List;
@@ -7,18 +6,38 @@ public class RulesFactory {
 
   public List<Rule> getDefaultFormattingRules() {
     return List.of(
-        new Rule("1", "space-before-colon", true, null),
-        new Rule("2", "space-after-colon", false, null),
-        new Rule("3", "space-around-equals", true, null),
-        new Rule("4", "newline-before-println", false, 0),
-        new Rule("5", "indentation", false, 4));
+            new Rule("spaceBeforeColon", "Espacio antes de ':'", true, null),
+            new Rule("spaceAfterColon", "Espacio después de ':'", true, null),
+            new Rule("spaceAroundEquals", "Espacio alrededor de '='", true, null),
+            new Rule("spaceAroundOperators", "Espacio alrededor de operadores", false, null),
+            new Rule("lineJumpAfterSemicolon", "Salto de línea tras ';'", false, null),
+            new Rule("indentSize", "Tamaño de indentación", false, 2)
+    );
   }
 
   public List<Rule> getDefaultLintingRules() {
     return List.of(
-        new Rule("1", "snake-case-variables", true, null),
-        new Rule("2", "camel-case-variables", true, null),
-        new Rule("3", "mandatory-variable-or-literal-in-println", true, null),
-        new Rule("4", "read-input-with-simple-argument", true, null));
+            new Rule("no-duplicate-var", "Variable ya declarada previamente", true, null),
+            new Rule(
+                    "identifier-style",
+                    "Identificadores con estilo (camelCase o snake_case)",
+                    false,
+                    null),
+            new Rule(
+                    "println-restriction",
+                    "println solo admite literal o identificador",
+                    true,
+                    null),
+            new Rule(
+                    "string-number-concat",
+                    "Concat de string con number con '+'",
+                    true,
+                    null),
+            new Rule(
+                    "read-input-prompt",
+                    "readInput con prompt string o identificador",
+                    true,
+                    null)
+    );
   }
 }

@@ -1,8 +1,8 @@
 package com.snippetsearcher.snippet.jobs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetTest;
 import com.snippetsearcher.snippet.repository.SnippetRepository;

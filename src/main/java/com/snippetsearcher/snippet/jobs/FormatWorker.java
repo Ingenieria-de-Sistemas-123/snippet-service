@@ -1,10 +1,11 @@
 package com.snippetsearcher.snippet.jobs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
+import com.snippetsearcher.snippet.service.FormattingRulesService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -26,18 +27,21 @@ public class FormatWorker {
   private final SnippetRepository snippetRepository;
   private final com.snippetsearcher.snippet.client.AssetClient assetClient;
   private final LanguageClient languageClient;
+  private final FormattingRulesService formattingRulesService;
 
   public FormatWorker(
       RedisTemplate<String, String> redisTemplate,
       ObjectMapper objectMapper,
       SnippetRepository snippetRepository,
       com.snippetsearcher.snippet.client.AssetClient assetClient,
-      LanguageClient languageClient) {
+      LanguageClient languageClient,
+      FormattingRulesService formattingRulesService) {
     this.redisTemplate = redisTemplate;
     this.objectMapper = objectMapper;
     this.snippetRepository = snippetRepository;
     this.assetClient = assetClient;
     this.languageClient = languageClient;
+    this.formattingRulesService = formattingRulesService;
   }
 
   @Scheduled(fixedDelay = 2000)
@@ -59,6 +63,7 @@ public class FormatWorker {
 
   private void runFormatForAdmin(UUID adminId) {
     log.info("Ejecutando formateo masivo para admin {}", adminId);
+    String configJson = formattingRulesService.buildFormatterConfigJsonFromStoredRules();
     List<Snippet> snippets = snippetRepository.findAllByOwnerUserId(adminId);
     if (CollectionUtils.isEmpty(snippets)) return;
 
@@ -70,7 +75,7 @@ public class FormatWorker {
         LanguageDtos.FormatResponse res =
             languageClient.format(
                 new LanguageDtos.FormatRequest(
-                    snippet.getLanguage(), snippet.getVersion(), content, false));
+                    snippet.getLanguage(), snippet.getVersion(), content, false, configJson));
 
         byte[] formattedBytes = res.formatted().getBytes(StandardCharsets.UTF_8);
         String newKey =
