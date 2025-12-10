@@ -9,6 +9,9 @@ jobs:
   publish:
     if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    outputs:
+      image_repo: ghcr.io/${{ steps.img.outputs.owner }}/snippet-service
+      deploy_tag: ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
 
     permissions:
       contents: read
@@ -62,4 +65,55 @@ jobs:
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:latest
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}
+
+  deploy-dev:
+    name: Deploy snippet-service (dev)
+    needs: publish
+    runs-on: ubuntu-latest
+    if: ${{ needs.publish.result == 'success' && github.ref == 'refs/heads/dev' }}
+    steps:
+      - name: Deploy to dev VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            bash -lc '
+              set -euo pipefail
+              cd "${{ secrets.VM_PROJECT_PATH }}"
+
+              echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin
+              docker compose pull snippet-service
+              docker compose up -d --no-deps snippet-service
+              docker image prune -f --filter "dangling=true"
+            '
+
+  deploy-prod:
+    name: Deploy snippet-service (prod)
+    needs: publish
+    runs-on: ubuntu-latest
+    if: ${{ needs.publish.result == 'success' && github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Deploy to prod VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_VM_HOST }}
+          username: ${{ secrets.PROD_VM_USER }}
+          key: ${{ secrets.PROD_DEPLOY_SSH_KEY }}
+          script: |
+            bash -lc '
+              set -euo pipefail
+              echo "[deploy-prod] Switching to workdir"
+              cd "${{ secrets.PROD_DEPLOY_WORKDIR }}"
+
+              echo "[deploy-prod] Logging into GHCR"
+              echo "${{ secrets.PROD_GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.PROD_GHCR_USER }}" --password-stdin
+              echo "[deploy-prod] Pulling latest snippet-service image"
+              docker compose pull snippet-service
+              echo "[deploy-prod] Restarting snippet-service container"
+              docker compose up -d --no-deps snippet-service
+              echo "[deploy-prod] Pruning dangling images"
+              docker image prune -f --filter "dangling=true"
+            '
 
