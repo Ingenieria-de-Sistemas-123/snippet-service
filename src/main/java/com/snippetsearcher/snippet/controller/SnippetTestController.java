@@ -14,7 +14,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/snippets/{snippetId}/tests")
+@RequestMapping({
+    "/api/snippets/tests/{snippetId}"
+})
 public class SnippetTestController {
 
   private final SnippetTestService snippetTestService;
