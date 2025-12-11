@@ -1,6 +1,7 @@
 package com.snippetsearcher.snippet.client;
 
 import com.snippetsearcher.snippet.dto.PermissionTypeDto;
+import com.snippetsearcher.snippet.dto.PermissionUserDto;
 import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
 import com.snippetsearcher.snippet.dto.UserAccountDto;
 import com.snippetsearcher.snippet.dto.request.CreatePermissionRequestDto;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -94,5 +96,26 @@ public class PermissionClient {
       throw new IllegalStateException(
           "Error creando permiso OWNER. Status=" + response.getStatusCode());
     }
+  }
+
+  public List<PermissionUserDto> getUsers(String bearerToken) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(bearerToken);
+
+    HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+    ResponseEntity<List<PermissionUserDto>> response =
+            restTemplate.exchange(
+                    baseUrl + "/api/users",
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<List<PermissionUserDto>>() {}
+            );
+
+    if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+      throw new IllegalStateException("Error obteniendo usuarios en permission-service");
+    }
+
+    return response.getBody();
   }
 }

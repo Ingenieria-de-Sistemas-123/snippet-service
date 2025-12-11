@@ -5,15 +5,14 @@ import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
-import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
-import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetResponse;
-import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
+import com.snippetsearcher.snippet.dto.response.*;
 import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -95,10 +94,17 @@ public class SnippetController {
 
   @PostMapping("/{id}/share")
   public SnippetResponse shareSnippet(
-      @AuthenticationPrincipal Jwt jwt,
-      @PathVariable("id") UUID snippetId,
-      @Valid @RequestBody ShareSnippetRequest request) {
+          @AuthenticationPrincipal Jwt jwt,
+          @PathVariable("id") UUID snippetId,
+          @Valid @RequestBody ShareSnippetRequest request) {
     return snippetService.shareSnippet(jwt, snippetId, request);
+  }
+
+  @GetMapping("/users")
+  public List<FriendsResponse> getUsers(
+          @AuthenticationPrincipal Jwt jwt
+  ) {
+    return snippetService.getFriends(jwt);
   }
 
   @PostMapping("/{id}/tests/{testId}/execute")
