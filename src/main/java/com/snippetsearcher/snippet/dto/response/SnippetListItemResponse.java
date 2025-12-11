@@ -13,7 +13,8 @@ public record SnippetListItemResponse(
     String language,
     String extension,
     String author,
-    SnippetComplianceStatus compliance,
+    SnippetComplianceStatus complianceStatus,
+    boolean valid,
     PermissionTypeDto relation) {
 
   public static SnippetListItemResponse fromEntity(
@@ -25,6 +26,7 @@ public record SnippetListItemResponse(
         assetExtension,
         snippet.getOwnerUserId() != null ? snippet.getOwnerUserId().toString() : null,
         snippet.getComplianceStatus(),
+        snippet.getComplianceStatus() == SnippetComplianceStatus.VALID,
         relation);
   }
 }
