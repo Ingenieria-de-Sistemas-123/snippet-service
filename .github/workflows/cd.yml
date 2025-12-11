@@ -75,14 +75,16 @@ jobs:
       - name: Deploy updated service
         uses: appleboy/ssh-action@v1.0.3
         env:
-          GHCR_LOGIN_TOKEN: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
-          GHCR_LOGIN_USER: ${{ secrets.GHCR_USER || github.actor }}
+          GHCR_LOGIN_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_LOGIN_USER: ${{ secrets.GHCR_USER }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          # Esto hace que esas envs se exporten al bash de la VM
+          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
           script: |
-            set -euo
+            set -euo pipefail
             echo "[deploy-dev] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
             cd "${{ secrets.DEPLOY_WORKDIR }}"
             echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
