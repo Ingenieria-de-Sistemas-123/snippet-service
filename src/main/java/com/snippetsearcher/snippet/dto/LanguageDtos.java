@@ -19,7 +19,7 @@ public class LanguageDtos {
 
   public record AnalyzeResponse(List<AnalyzeIssue> issues, String raw) {}
 
-  public record ExecuteRequest(String language, String version, String content) {}
+  public record ExecuteRequest(String language, String version, String content, String input) {}
 
   public record ExecuteResponse(int exitCode, String stdout, String stderr) {}
 }
