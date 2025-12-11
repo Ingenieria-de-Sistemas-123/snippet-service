@@ -67,12 +67,12 @@ jobs:
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}
 
   deploy-dev:
-    name: Deploy snippet-service (dev)
-    needs: publish
+    name: Deploy to VM (dev)
     runs-on: ubuntu-latest
-    if: ${{ needs.publish.result == 'success' && github.ref == 'refs/heads/dev' }}
+    needs: publish
+    if: needs.publish.result == 'success' && github.ref == 'refs/heads/dev'
     steps:
-      - name: Deploy to dev VM
+      - name: Deploy updated service
         uses: appleboy/ssh-action@v1.0.3
         env:
           GHCR_LOGIN_TOKEN: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
@@ -81,9 +81,8 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
           script: |
-            set -euo pipefail
+            set -euo
             echo "[deploy-dev] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
             cd "${{ secrets.DEPLOY_WORKDIR }}"
             echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
