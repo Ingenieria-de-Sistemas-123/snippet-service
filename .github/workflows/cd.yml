@@ -81,10 +81,11 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
           script: |
             set -euo pipefail
             echo "[deploy-dev] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
-            cd "${{ secrets.DEPLOY_WORKDIR}}"
+            cd "${{ secrets.DEPLOY_WORKDIR }}"
             echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
             docker compose pull snippet-service
             docker compose up -d --no-deps snippet-service
