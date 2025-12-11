@@ -86,10 +86,20 @@ jobs:
           script: |
             set -euo pipefail
             echo "[deploy-dev] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
-            cd "${{ secrets.DEPLOY_WORKDIR }}"
+            cd "${{ secrets.DEPLOY_WORKDIR_DEV }}"
             echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
-            docker compose pull snippet-service
-            docker compose up -d --no-deps snippet-service
+            COMPOSE_FILE="docker-compose.dev.yml"
+            ENV_FILE=".env.dev"
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "::error file=$COMPOSE_FILE::Compose file not found"
+              exit 1
+            fi
+            ENV_FLAG=""
+            if [ -f "$ENV_FILE" ]; then
+              ENV_FLAG="--env-file $ENV_FILE"
+            fi
+            docker compose -f "$COMPOSE_FILE" $ENV_FLAG pull snippet-service
+            docker compose -f "$COMPOSE_FILE" $ENV_FLAG up -d --no-deps snippet-service
             docker image prune -f --filter "dangling=true"
 
   deploy-prod:
