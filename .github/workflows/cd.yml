@@ -9,6 +9,9 @@ jobs:
   publish:
     if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    outputs:
+      image_repo: ghcr.io/${{ steps.img.outputs.owner }}/snippet-service
+      deploy_tag: ${{ steps.tag.outputs.value }}
 
     permissions:
       contents: read
@@ -63,3 +66,67 @@ jobs:
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
             ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}
 
+  deploy-dev:
+    name: Deploy to VM (dev)
+    runs-on: ubuntu-latest
+    needs: publish
+    if: needs.publish.result == 'success' && github.ref == 'refs/heads/dev'
+    steps:
+      - name: Deploy updated service
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          GHCR_LOGIN_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_LOGIN_USER: ${{ secrets.GHCR_USER }}
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          # Esto hace que esas envs se exporten al bash de la VM
+          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
+          script: |
+            set -euo pipefail
+            echo "[deploy-dev] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
+            cd "${{ secrets.DEPLOY_WORKDIR_DEV }}"
+            echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
+            COMPOSE_FILE="docker-compose.dev.yml"
+            ENV_FILE=".env.dev"
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "::error file=$COMPOSE_FILE::Compose file not found"
+              exit 1
+            fi
+            ENV_FLAG=""
+            if [ -f "$ENV_FILE" ]; then
+              ENV_FLAG="--env-file $ENV_FILE"
+            fi
+            docker compose -f "$COMPOSE_FILE" $ENV_FLAG pull snippet-service
+            docker compose -f "$COMPOSE_FILE" $ENV_FLAG up -d --no-deps snippet-service
+            docker image prune -f --filter "dangling=true"
+
+  deploy-prod:
+    name: Deploy snippet-service (prod)
+    needs: publish
+    runs-on: ubuntu-latest
+    if: ${{ needs.publish.result == 'success' && github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Deploy to prod VM
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          GHCR_LOGIN_TOKEN: ${{ secrets.PROD_GHCR_TOKEN }}
+          GHCR_LOGIN_USER: ${{ secrets.PROD_GHCR_USER }}
+        with:
+          host: ${{ secrets.PROD_VM_HOST }}
+          username: ${{ secrets.PROD_VM_USER }}
+          key: ${{ secrets.PROD_DEPLOY_SSH_KEY }}
+          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
+          script: |
+            set -euo pipefail
+            echo "[deploy-prod] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
+            cd "${{ secrets.PROD_DEPLOY_WORKDIR }}"
+            echo "[deploy-prod] Logging into GHCR"
+            echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
+            echo "[deploy-prod] Pulling latest snippet-service image"
+            docker compose pull snippet-service
+            echo "[deploy-prod] Restarting snippet-service container"
+            docker compose up -d --no-deps snippet-service
+            echo "[deploy-prod] Pruning dangling images"
+            docker image prune -f --filter "dangling=true"
