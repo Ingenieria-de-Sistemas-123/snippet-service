@@ -105,12 +105,11 @@ public class PermissionClient {
     HttpEntity<Void> entity = new HttpEntity<>(headers);
 
     ResponseEntity<List<PermissionUserDto>> response =
-            restTemplate.exchange(
-                    baseUrl + "/api/users",
-                    HttpMethod.GET,
-                    entity,
-                    new ParameterizedTypeReference<List<PermissionUserDto>>() {}
-            );
+        restTemplate.exchange(
+            baseUrl + "/api/users",
+            HttpMethod.GET,
+            entity,
+            new ParameterizedTypeReference<List<PermissionUserDto>>() {});
 
     if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
       throw new IllegalStateException("Error obteniendo usuarios en permission-service");
