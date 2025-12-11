@@ -105,6 +105,7 @@ jobs:
           host: ${{ secrets.PROD_VM_HOST }}
           username: ${{ secrets.PROD_VM_USER }}
           key: ${{ secrets.PROD_DEPLOY_SSH_KEY }}
+          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
           script: |
             set -euo pipefail
             echo "[deploy-prod] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
@@ -117,4 +118,3 @@ jobs:
             docker compose up -d --no-deps snippet-service
             echo "[deploy-prod] Pruning dangling images"
             docker image prune -f --filter "dangling=true"
-
