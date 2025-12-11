@@ -9,13 +9,20 @@ public class LanguageDtos {
 
   public record ValidateResponse(boolean valid, List<ValidationError> errors) {}
 
-  public record FormatRequest(String language, String version, String content, Boolean check) {}
+  public record FormatRequest(String language, String version, String content, Boolean check, String configJson) {}
 
   public record FormatResponse(boolean changed, String formatted, String diagnostics) {}
 
   public record AnalyzeRequest(String language, String version, String content) {}
 
-  public record AnalyzeIssue(String message) {}
+  public record AnalyzeIssue(
+      String rule,
+      String message,
+      String severity,
+      Integer startLine,
+      Integer startCol,
+      Integer endLine,
+      Integer endCol) {}
 
   public record AnalyzeResponse(List<AnalyzeIssue> issues, String raw) {}
 

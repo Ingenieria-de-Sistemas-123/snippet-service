@@ -1,52 +1,107 @@
 package com.snippetsearcher.snippet.controller;
 
-import com.snippetsearcher.snippet.dto.LanguageDtos.AnalyzeResponse;
-import com.snippetsearcher.snippet.dto.LanguageDtos.ExecuteResponse;
-import com.snippetsearcher.snippet.model.Snippet;
+import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.FormatSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
+import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
+import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
+import com.snippetsearcher.snippet.dto.response.FormatSnippetResponse;
+import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetResponse;
+import com.snippetsearcher.snippet.service.SnippetLanguageService;
 import com.snippetsearcher.snippet.service.SnippetService;
-import java.util.List;
-import java.util.Map;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/snippets")
+@Validated
+@RequestMapping("/api/snippets")
 public class SnippetController {
 
-  private final SnippetService app;
+  private final SnippetService snippetService;
+  private final SnippetLanguageService snippetLanguageService;
 
-  public SnippetController(SnippetService app) {
-    this.app = app;
+  public SnippetController(
+      SnippetService snippetService, SnippetLanguageService snippetLanguageService) {
+    this.snippetService = snippetService;
+    this.snippetLanguageService = snippetLanguageService;
   }
 
-  public record CreateSnippet(String name, String language, String version, String content) {}
-
-  public record AnalyzeBody(String language, String version, String content) {}
-
-  public record ExecuteBody(String language, String version, String content) {}
-
-  @PostMapping
-  public ResponseEntity<?> create(@RequestBody CreateSnippet body) {
-    try {
-      Snippet saved = app.create(body.name(), body.language(), body.version(), body.content());
-      return ResponseEntity.ok(saved);
-    } catch (IllegalArgumentException ex) {
-      return ResponseEntity.badRequest().body(Map.of("valid", false, "errors", ex.getMessage()));
-    }
-  }
-
-  @PostMapping("/analyze")
-  public ResponseEntity<AnalyzeResponse> analyze(@RequestBody AnalyzeBody body) {
-    return ResponseEntity.ok(app.analyze(body.language(), body.version(), body.content()));
-  }
-
-  @PostMapping("/execute")
-  public ResponseEntity<ExecuteResponse> execute(@RequestBody ExecuteBody body) {
-    return ResponseEntity.ok(app.execute(body.language(), body.version(), body.content()));
+  /**
+   * Use Case 1: crear snippet a partir de un archivo + metadatos.
+   *
+   * <p>Content-Type: multipart/form-data - file: archivo del snippet - request: JSON con
+   * CreateSnippetRequest
+   */
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public SnippetResponse createSnippet(
+      @AuthenticationPrincipal Jwt jwt,
+      @RequestPart("file") MultipartFile file,
+      @Valid @RequestPart("request") CreateSnippetRequest request) {
+    return snippetService.createSnippet(jwt, request, file);
   }
 
   @GetMapping
-  public List<Snippet> list() {
-    return app.list();
+  public ListSnippetsResponse listSnippets(
+      @AuthenticationPrincipal Jwt jwt,
+      @RequestParam(defaultValue = "0") @Min(0) int page,
+      @RequestParam(name = "page_size", defaultValue = "10") @Min(1) @Max(100) int pageSize,
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) String language,
+      @RequestParam(required = false) Boolean valid,
+      @RequestParam(defaultValue = "all") String relation,
+      @RequestParam(name = "sort_by", defaultValue = "updated_at") String sortBy,
+      @RequestParam(name = "sort_dir", defaultValue = "desc") String sortDir) {
+    try {
+      ListSnippetsQuery query =
+          ListSnippetsQuery.from(page, pageSize, name, language, valid, relation, sortBy, sortDir);
+      return snippetService.listSnippets(jwt, query);
+    } catch (IllegalArgumentException ex) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+    }
+  }
+
+  @GetMapping("/{id}")
+  public SnippetResponse getSnippet(
+      @AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID snippetId) {
+    return snippetService.getSnippet(jwt, snippetId);
+  }
+
+  @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public SnippetResponse updateSnippet(
+      @AuthenticationPrincipal Jwt jwt,
+      @PathVariable("id") UUID snippetId,
+      @RequestPart("file") MultipartFile file,
+      @Valid @RequestPart("request") UpdateSnippetRequest request) {
+    return snippetService.updateSnippet(jwt, snippetId, request, file);
+  }
+
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteSnippet(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID snippetId) {
+    snippetService.deleteSnippet(jwt, snippetId);
+  }
+
+  @PostMapping("/{id}/share")
+  public SnippetResponse shareSnippet(
+      @AuthenticationPrincipal Jwt jwt,
+      @PathVariable("id") UUID snippetId,
+      @Valid @RequestBody ShareSnippetRequest request) {
+    return snippetService.shareSnippet(jwt, snippetId, request);
+  }
+
+  @PostMapping("/format")
+  public FormatSnippetResponse formatSnippet(@Valid @RequestBody FormatSnippetRequest request) {
+    return snippetLanguageService.formatSnippet(request);
   }
 }

@@ -1,9 +1,11 @@
-CREATE TABLE snippet
-(
-    id         UUID NOT NULL,
-    name       VARCHAR(255),
-    language   VARCHAR(255),
-    content    TEXT,
-    created_at TIMESTAMP WITHOUT TIME ZONE,
-    CONSTRAINT pk_snippet PRIMARY KEY (id)
-);
+
+CREATE TABLE IF NOT EXISTS snippets (
+    id UUID PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    language VARCHAR(50) NOT NULL,
+    description VARCHAR(1000),
+    asset_key VARCHAR(300) NOT NULL UNIQUE,
+    owner_user_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL
+    );

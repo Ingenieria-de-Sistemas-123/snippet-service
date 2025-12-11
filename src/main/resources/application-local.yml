@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/snippet-db
+    username: ${DB_USERNAME:snippet}
+    password: ${DB_PASSWORD:snippet}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      url: ${SPRING_DATA_REDIS_URL:redis://redis:6379}
+
+logging:
+  level:
+    com.snippetsearcher.snippet: DEBUG
+
+language:
+  base-url: ${LANGUAGE_BASE_URL:http://localhost:8082}
+
+asset-service:
+  base-url: ${ASSET_SERVICE_BASE_URL:http://localhost:8083}
+  snippets-container: snippets
+
+permission-service:
+  base-url: ${PERMISSION_SERVICE_BASE_URL:http://localhost:8084}
+
+snippet:
+  file-types:
+    - language: printscript
+      extension: prs
+    - language: python
+      extension: py
+    - language: java
+      extension: java
+    - language: golang
+      extension: go

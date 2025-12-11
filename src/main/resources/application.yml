@@ -1,17 +1,28 @@
 spring:
   datasource:
-    url: jdbc:postgresql://snippet-db:5432/${DB_NAME}
+    url: jdbc:postgresql://localhost:5432/snippet-db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
   flyway:
     enabled: true
 
-language:
-  base-url: ${LANGUAGE_BASE_URL:http://localhost:8080}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # para local podés hardcodear o usar env var
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:https://dev-7t5evioih4aq30t7.us.auth0.com/}
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      url: ${SPRING_DATA_REDIS_URL:redis://redis:6379}
 
 management:
   endpoints:
@@ -24,3 +35,24 @@ logging:
     org.springframework: INFO
     org.hibernate.SQL: DEBUG
     com.snippetsearcher.snippet: DEBUG
+
+language:
+  base-url: ${LANGUAGE_BASE_URL:http://localhost:8082}
+
+asset-service:
+  base-url: ${ASSET_SERVICE_BASE_URL:http://asset-service:8080}
+  snippets-container: snippets
+
+permission-service:
+  base-url: ${PERMISSION_SERVICE_BASE_URL:http://permission-service:8080}
+
+snippet:
+  file-types:
+    - language: printscript
+      extension: prs
+    - language: python
+      extension: py
+    - language: java
+      extension: java
+    - language: golang
+      extension: go
