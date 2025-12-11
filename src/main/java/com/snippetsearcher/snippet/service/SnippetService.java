@@ -2,6 +2,11 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
+import com.snippetsearcher.snippet.language.LanguageClient;
+import com.snippetsearcher.snippet.dto.LanguageDtos;
+import com.snippetsearcher.snippet.dto.PermissionTypeDto;
+import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
+import com.snippetsearcher.snippet.dto.UserAccountDto;
 import com.snippetsearcher.snippet.dto.*;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
@@ -9,7 +14,6 @@ import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.*;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
-import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.model.SnippetTest;
@@ -41,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SnippetService {
 
   private static final Logger log = LoggerFactory.getLogger(SnippetService.class);
+  private static final String UNSPECIFIED_VERSION_VALUE = "unspecified";
 
   private final SnippetRepository snippetRepository;
   private final AssetClient assetClient;
@@ -78,15 +83,17 @@ public class SnippetService {
     UUID userId = user.id();
 
     // 2) Validar y subir archivo a asset-service
-    String assetKey = uploadValidatedSnippetContent(file, request.language(), request.version());
+    String normalizedVersion = normalizeVersion(request.version());
+    String normalizedDescription = normalizeDescription(request.description());
+    String assetKey = uploadValidatedSnippetContent(file, request.language(), normalizedVersion);
 
     // 3) Crear snippet en DB local
     Snippet snippet =
         new Snippet(
             request.name(),
             request.language(),
-            request.version(),
-            request.description(),
+            normalizedVersion,
+            normalizedDescription,
             assetKey,
             userId);
     markSnippetValid(snippet);
@@ -151,7 +158,7 @@ public class SnippetService {
             .toList();
     SnippetComplianceStatus complianceStatus =
         lintErrors.isEmpty() ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
-    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.get(0).message();
+    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.getFirst().message();
     return SnippetResponse.fromEntity(
         snippet, content, lintErrors, tests, complianceStatus, complianceMessage);
   }
@@ -161,11 +168,14 @@ public class SnippetService {
       Jwt jwt, UUID snippetId, UpdateSnippetRequest request, MultipartFile file) {
     UserAccountDto user = ensureUser(jwt);
     Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
-    String assetKey = uploadValidatedSnippetContent(file, request.language(), request.version());
-    snippet.setName(request.name());
+    String resolvedName = resolveUpdatedName(request);
+    String resolvedDescription = resolveUpdatedDescription(snippet, request);
+    String resolvedVersion = resolveUpdatedVersion(snippet, request);
+    String assetKey = uploadValidatedSnippetContent(file, request.language(), resolvedVersion);
+    snippet.setName(resolvedName);
     snippet.setLanguage(request.language());
-    snippet.setDescription(request.description());
-    snippet.setVersion(request.version());
+    snippet.setDescription(resolvedDescription);
+    snippet.setVersion(resolvedVersion);
     snippet.setAssetKey(assetKey);
     markSnippetValid(snippet);
     snippet = snippetRepository.save(snippet);
@@ -275,7 +285,7 @@ public class SnippetService {
         collectLintErrors(language, version, new String(content, StandardCharsets.UTF_8));
 
     if (!errors.isEmpty()) {
-      SnippetLintErrorResponse firstError = errors.get(0);
+      SnippetLintErrorResponse firstError = errors.getFirst();
       String violatedRule =
           StringUtils.hasText(firstError.rule()) ? firstError.rule() : "desconocida";
       throw new IllegalArgumentException(
@@ -300,7 +310,8 @@ public class SnippetService {
 
   private List<SnippetLintErrorResponse> collectLintErrors(
       String language, String version, String content) {
-    var validation = languageValidationService.validate(language, version, content);
+    var validation =
+        languageValidationService.validate(language, normalizeVersion(version), content);
     if (validation == null || validation.valid() || validation.errors() == null) {
       return List.of();
     }
@@ -327,12 +338,42 @@ public class SnippetService {
     }
   }
 
-
   private void updateTestResult(SnippetTest test, LanguageDtos.ExecuteResponse response) {
     test.setLastRunAt(OffsetDateTime.now());
     test.setLastRunExitCode(response.exitCode());
     test.setLastRunOutput(response.stdout());
     test.setLastRunError(response.stderr());
+  }
+
+  private String normalizeVersion(String version) {
+    if (!StringUtils.hasText(version)) {
+      return null;
+    }
+    String trimmed = version.trim();
+    return UNSPECIFIED_VERSION_VALUE.equalsIgnoreCase(trimmed) ? null : trimmed;
+  }
+
+  private String normalizeDescription(String description) {
+    return StringUtils.hasText(description) ? description.trim() : null;
+  }
+
+  private String resolveUpdatedName(UpdateSnippetRequest request) {
+    if (!StringUtils.hasText(request.name())) {
+      throw new IllegalArgumentException("El nombre es obligatorio.");
+    }
+    return request.name().trim();
+  }
+
+  private String resolveUpdatedDescription(Snippet snippet, UpdateSnippetRequest request) {
+    return request.description() == null
+        ? snippet.getDescription()
+        : normalizeDescription(request.description());
+  }
+
+  private String resolveUpdatedVersion(Snippet snippet, UpdateSnippetRequest request) {
+    return request.version() == null
+        ? normalizeVersion(snippet.getVersion())
+        : normalizeVersion(request.version());
   }
 
   private Specification<Snippet> buildSpecification(

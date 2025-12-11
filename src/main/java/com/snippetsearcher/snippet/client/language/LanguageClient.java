@@ -1,4 +1,4 @@
-package com.snippetsearcher.snippet.language;
+package com.snippetsearcher.snippet.client.language;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 

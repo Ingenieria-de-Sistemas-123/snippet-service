@@ -1,0 +1,655 @@
+2025-12-04T19:47:43,890+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-04T19:47:43,891+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-04T19:47:43,891+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-04T19:47:43,892+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-04T19:47:43,892+0000 [1 1] com.newrelic INFO: Agent Host: d9e1ae2c56db IP: 172.20.0.4
+2025-12-04T19:47:43,892+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-04T19:47:44,301+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-04T19:47:48,173+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-04T19:47:48,177+0000 [1 1] com.newrelic INFO: Found container id: d9e1ae2c56dbabd768a7d7cd07d3c6471e2ddb0b91ce104327e4f2e95298bfe0
+2025-12-04T19:47:48,177+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-04T19:47:48,195+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-04T19:47:48,199+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-04T19:47:48,363+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-04T19:47:48,435+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-04T19:47:48,436+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-04T19:47:48,436+0000 [1 1] com.newrelic INFO: Premain startup complete in 5,053ms
+2025-12-04T19:47:48,437+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-04T19:47:50,556+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-04T19:47:53,442+0000 [1 53] com.newrelic INFO: Host name is d9e1ae2c56db, display host d9e1ae2c56db for application SnippetSearcher
+2025-12-04T19:47:53,443+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T19:47:54,539+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-04T19:47:55,413+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-04T19:47:55,413+0000 [1 53] com.newrelic INFO: Agent run id: BU-52aWxc1otAHGEa1m5eOppMeWsAAIBACdHIQEAAAABAgRZuj1v2eGuLFbbq9dop9fNB9PGRx4t2wuRzhBDJ-Ty6VKYv-ADAAY4LjI1LjAADGQ5ZTFhZTJjNTZkYgAPU25pcHBldFNlYXJjaGVy
+2025-12-04T19:47:55,414+0000 [1 53] com.newrelic INFO: Agent 1@d9e1ae2c56db/SnippetSearcher connected to collector.newrelic.com:443
+2025-12-04T19:47:55,415+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1505377647
+2025-12-04T19:47:55,419+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T19:47:55,420+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T19:47:55,420+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T19:47:55,421+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T19:47:55,422+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:47:55,422+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:47:55,423+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T19:47:55,424+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T19:47:55,424+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T19:47:55,425+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T19:47:55,425+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:47:55,426+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:47:56,577+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application SnippetSearcher. Auto instrumentation is enabled.
+2025-12-04T19:47:56,582+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-04T19:47:56,584+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T19:49:20,196+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-04T19:50:50,074+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-04T19:50:50,075+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-04T19:50:50,075+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-04T19:50:50,075+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-04T19:50:50,075+0000 [1 1] com.newrelic INFO: Agent Host: f3fe7ee9d924 IP: 172.20.0.4
+2025-12-04T19:50:50,076+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-04T19:50:50,618+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-04T19:50:51,946+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-04T19:50:51,947+0000 [1 1] com.newrelic INFO: Found container id: f3fe7ee9d9245d53fa65fd08c1802f4bc7dc658c75544eae92ce1d6e2ff28b35
+2025-12-04T19:50:51,948+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-04T19:50:51,968+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-04T19:50:51,977+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-04T19:50:52,216+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-04T19:50:52,317+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-04T19:50:52,317+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-04T19:50:52,317+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,987ms
+2025-12-04T19:50:52,318+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-04T19:50:54,955+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-04T19:51:02,336+0000 [1 53] com.newrelic INFO: Host name is f3fe7ee9d924, display host f3fe7ee9d924 for application SnippetSearcher-Backend
+2025-12-04T19:51:02,340+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T19:51:03,698+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-04T19:51:04,583+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-04T19:51:04,585+0000 [1 53] com.newrelic INFO: Agent run id: BVnLUhGpSIT2AHGEa1m4xYFpMeacAAIBACdHIQEAAAABAgRZuCuU8_5-6dkkXVP6Zf0IwYAvS8fcZYx1VE6uks4dbi_yizUDAAY4LjI1LjAADGYzZmU3ZWU5ZDkyNAAXU25pcHBldFNlYXJjaGVyLUJhY2tlbmQ
+2025-12-04T19:51:04,588+0000 [1 53] com.newrelic INFO: Agent 1@f3fe7ee9d924/SnippetSearcher-Backend connected to collector.newrelic.com:443
+2025-12-04T19:51:04,591+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1505242004
+2025-12-04T19:51:04,599+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T19:51:04,599+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T19:51:04,599+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T19:51:04,606+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T19:51:04,607+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:51:04,607+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:51:04,613+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T19:51:04,613+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T19:51:04,614+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T19:51:04,618+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T19:51:04,618+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:51:04,619+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T19:51:05,394+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application SnippetSearcher-Backend. Auto instrumentation is enabled.
+2025-12-04T19:51:05,395+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-04T19:51:05,396+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T20:40:13,470+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T21:17:54,219+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T21:41:34,115+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T21:51:42,865+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-04T21:52:52,847+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-04T21:52:52,849+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.4
+2025-12-04T21:52:52,849+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.4+7-LTS
+2025-12-04T21:52:52,849+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch amd64
+2025-12-04T21:52:52,849+0000 [1 1] com.newrelic INFO: Agent Host: 3c6988547c1c IP: 172.20.0.2
+2025-12-04T21:52:52,849+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-04T21:52:54,264+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-04T21:52:57,352+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-04T21:52:57,353+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-04T21:52:57,353+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-04T21:52:57,353+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-04T21:52:57,353+0000 [1 1] com.newrelic INFO: Agent Host: 3fb42f699dac IP: 172.20.0.4
+2025-12-04T21:52:57,353+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-04T21:52:57,997+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-04T21:52:58,672+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-04T21:52:58,690+0000 [1 1] com.newrelic INFO: Found container id: 3c6988547c1cf5074ea4aacd7750de3c7a74d283f8e819f858e0fd30a8c4baeb
+2025-12-04T21:52:58,694+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-04T21:52:58,825+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-04T21:52:58,845+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-04T21:52:58,910+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-04T21:52:58,912+0000 [1 1] com.newrelic INFO: Found container id: 3fb42f699dacd96ae1528cb4f2d8792a27ff1ce322c2491c4120093bd9ecd596
+2025-12-04T21:52:58,913+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-04T21:52:58,940+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-04T21:52:58,944+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-04T21:52:59,267+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-04T21:52:59,363+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-04T21:52:59,364+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-04T21:52:59,364+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,672ms
+2025-12-04T21:52:59,366+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-04T21:52:59,655+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-04T21:53:00,386+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-04T21:53:00,388+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6477463f
+2025-12-04T21:53:00,395+0000 [1 1] com.newrelic INFO: Premain startup complete in 8,639ms
+2025-12-04T21:53:00,408+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-04T21:53:03,277+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-04T21:53:09,368+0000 [1 53] com.newrelic INFO: Host name is 3fb42f699dac, display host 3fb42f699dac for application SnippetSearcher-Backend
+2025-12-04T21:53:09,372+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T21:53:10,638+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-04T21:53:12,242+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-04T21:53:12,244+0000 [1 53] com.newrelic INFO: Agent run id: BethAQKzB5Q9AHGEa1jQ1expMgM0AAIBACdHIQEAAAABAgRZuCuUP7QvaZ2s2WrhUoy08th5Kif_HOMiwkkcQSAJO9ns1ZYDAAY4LjI1LjAADDNmYjQyZjY5OWRhYwAXU25pcHBldFNlYXJjaGVyLUJhY2tlbmQ
+2025-12-04T21:53:12,247+0000 [1 53] com.newrelic INFO: Agent 1@3fb42f699dac/SnippetSearcher-Backend connected to collector.newrelic.com:443
+2025-12-04T21:53:12,250+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1505242004
+2025-12-04T21:53:12,283+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T21:53:12,284+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T21:53:12,287+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T21:53:12,291+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:12,291+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:12,291+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:12,296+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T21:53:12,296+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T21:53:12,297+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T21:53:12,302+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:12,303+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:12,303+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:13,930+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application SnippetSearcher-Backend. Auto instrumentation is enabled.
+2025-12-04T21:53:13,932+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-04T21:53:13,939+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T21:53:16,511+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-04T21:53:20,472+0000 [1 53] com.newrelic INFO: Host name is 3c6988547c1c, display host 3c6988547c1c for application language-service
+2025-12-04T21:53:20,508+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T21:53:22,318+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-04T21:53:23,871+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-04T21:53:23,874+0000 [1 53] com.newrelic INFO: Agent run id: BZOp0yKhNSKLAHGEa1jSkCdpMgM0AAIBACdHIQEAAAABAgRYz9FsPGmIVHwc9QdOpKrNd1DePHp00oP46Bn4WOD9MKjEuusDAAY4LjI1LjAADDNjNjk4ODU0N2MxYwAQbGFuZ3VhZ2Utc2VydmljZQ
+2025-12-04T21:53:23,888+0000 [1 53] com.newrelic INFO: Agent 1@3c6988547c1c/language-service connected to collector.newrelic.com:443
+2025-12-04T21:53:23,898+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1490014572
+2025-12-04T21:53:23,930+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T21:53:23,931+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T21:53:23,932+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T21:53:23,943+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:23,944+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:23,946+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:23,976+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-04T21:53:23,977+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-04T21:53:23,978+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-04T21:53:23,992+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:23,993+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:23,993+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-04T21:53:24,275+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application language-service. Auto instrumentation is enabled.
+2025-12-04T21:53:24,277+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-04T21:53:24,278+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-04T23:23:06,313+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T23:23:49,281+0000 [1 80] com.newrelic ERROR: Remote span_event_data call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T23:40:13,704+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T23:40:25,004+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T23:57:14,727+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-04T23:57:23,345+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T00:14:12,011+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T00:14:21,809+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T00:30:08,712+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T00:30:20,494+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T00:46:07,410+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T01:17:32,031+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T01:38:59,319+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T01:39:03,094+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T01:55:13,897+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T02:12:12,272+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T02:12:52,520+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : java.net.SocketTimeoutException: Read timed out.
+2025-12-05T02:25:52,559+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T02:26:22,318+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T02:43:09,588+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:00:02,953+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:00:19,096+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:16:29,734+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:16:39,437+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:26:03,669+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:26:03,987+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:58:04,143+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T03:58:53,531+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T04:15:03,531+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T04:15:33,853+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T04:33:28,490+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T04:33:30,601+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T04:49:53,404+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T05:06:04,917+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T05:22:38,560+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T05:41:29,372+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T05:57:10,976+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T06:15:30,273+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T06:15:35,568+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T06:31:41,197+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T06:31:44,611+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T06:48:05,867+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T07:20:49,298+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T07:21:14,780+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T07:54:57,520+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T07:55:09,721+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T08:11:20,459+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T08:27:31,188+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T08:27:42,930+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T08:43:56,255+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T08:44:08,024+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T10:04:31,253+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T10:20:02,333+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T11:39:26,465+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T11:39:30,604+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T11:55:43,979+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T11:55:55,459+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T12:12:38,645+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T12:28:04,353+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T12:46:00,853+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T12:47:52,400+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : java.net.SocketTimeoutException: Read timed out.
+2025-12-05T14:10:17,882+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T14:10:24,038+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T14:44:49,356+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T14:44:57,938+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T15:10:49,313+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T15:13:44,434+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T15:13:44,435+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T15:13:44,435+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T15:13:44,435+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T15:13:44,435+0000 [1 1] com.newrelic INFO: Agent Host: e5b42448ac15 IP: 172.20.0.4
+2025-12-05T15:13:44,435+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T15:13:44,917+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T15:13:46,239+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T15:13:46,245+0000 [1 1] com.newrelic INFO: Found container id: e5b42448ac153e792e4ef499e553fb2a1a7807adcbdb8b22481bd0d98134572f
+2025-12-05T15:13:46,246+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T15:13:46,295+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T15:13:46,316+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T15:13:46,752+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T15:13:46,920+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T15:13:46,920+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T15:13:46,922+0000 [1 1] com.newrelic INFO: Premain startup complete in 3,869ms
+2025-12-05T15:13:46,927+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T15:13:51,919+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T15:15:00,222+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T15:15:00,223+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T15:15:00,223+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T15:15:00,223+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T15:15:00,223+0000 [1 1] com.newrelic INFO: Agent Host: e5b42448ac15 IP: 172.20.0.4
+2025-12-05T15:15:00,223+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T15:15:00,635+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T15:15:01,477+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T15:15:01,480+0000 [1 1] com.newrelic INFO: Found container id: e5b42448ac153e792e4ef499e553fb2a1a7807adcbdb8b22481bd0d98134572f
+2025-12-05T15:15:01,481+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T15:15:01,512+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T15:15:01,514+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T15:15:01,727+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T15:15:01,817+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T15:15:01,817+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T15:15:01,818+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,289ms
+2025-12-05T15:15:01,823+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T15:15:04,912+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T15:15:12,722+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T15:15:12,722+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T15:15:12,722+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T15:15:12,722+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T15:15:12,722+0000 [1 1] com.newrelic INFO: Agent Host: e5b42448ac15 IP: 172.20.0.4
+2025-12-05T15:15:12,722+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T15:15:13,049+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T15:15:13,632+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T15:15:13,633+0000 [1 1] com.newrelic INFO: Found container id: e5b42448ac153e792e4ef499e553fb2a1a7807adcbdb8b22481bd0d98134572f
+2025-12-05T15:15:13,633+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T15:15:13,656+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T15:15:13,659+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T15:15:13,794+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T15:15:13,864+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T15:15:13,865+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T15:15:13,865+0000 [1 1] com.newrelic INFO: Premain startup complete in 1,661ms
+2025-12-05T15:15:13,866+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T15:15:16,922+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T15:15:19,431+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T15:22:43,632+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T15:22:43,633+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T15:22:43,633+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T15:22:43,633+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T15:22:43,633+0000 [1 1] com.newrelic INFO: Agent Host: e5b42448ac15 IP: 172.20.0.4
+2025-12-05T15:22:43,633+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T15:22:44,096+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T15:22:44,956+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T15:22:44,958+0000 [1 1] com.newrelic INFO: Found container id: e5b42448ac153e792e4ef499e553fb2a1a7807adcbdb8b22481bd0d98134572f
+2025-12-05T15:22:44,958+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T15:22:44,988+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T15:22:44,993+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T15:22:45,252+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T15:22:45,325+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T15:22:45,325+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T15:22:45,326+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,597ms
+2025-12-05T15:22:45,326+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T15:22:48,099+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T15:22:50,146+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T15:47:37,424+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T16:07:34,280+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T16:07:34,281+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T16:07:34,281+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T16:07:34,281+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T16:07:34,281+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T16:07:34,281+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T16:07:34,673+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T16:07:35,237+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T16:07:35,240+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T16:07:35,240+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T16:07:35,260+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T16:07:35,263+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T16:07:35,483+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T16:07:35,551+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T16:07:35,551+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T16:07:35,551+0000 [1 1] com.newrelic INFO: Premain startup complete in 1,928ms
+2025-12-05T16:07:35,552+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T16:07:38,209+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T16:07:41,208+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T16:07:59,213+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T16:07:59,213+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T16:07:59,214+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T16:07:59,214+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T16:07:59,214+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T16:07:59,214+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T16:07:59,613+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T16:08:00,732+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T16:08:00,733+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T16:08:00,733+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T16:08:00,751+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T16:08:00,754+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T16:08:00,928+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T16:08:00,992+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T16:08:00,992+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T16:08:00,992+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,368ms
+2025-12-05T16:08:00,993+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T16:08:03,230+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T16:08:05,379+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T16:08:10,872+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T16:08:10,872+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T16:08:10,872+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T16:08:10,872+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T16:08:10,872+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T16:08:10,872+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T16:08:11,261+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T16:08:11,961+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T16:08:11,962+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T16:08:11,963+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T16:08:11,980+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T16:08:11,985+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T16:08:12,134+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T16:08:12,216+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T16:08:12,216+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T16:08:12,216+0000 [1 1] com.newrelic INFO: Premain startup complete in 1,764ms
+2025-12-05T16:08:12,217+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T16:08:14,582+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T16:08:16,465+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T16:38:54,510+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T17:07:17,448+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T17:25:40,205+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T17:27:05,768+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:27:05,768+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:27:05,768+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:27:05,768+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:27:05,768+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T17:27:05,768+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:27:06,344+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:27:07,298+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:27:07,301+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T17:27:07,301+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:27:07,368+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:27:07,372+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:27:07,604+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:27:07,707+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:27:07,707+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:27:07,707+0000 [1 1] com.newrelic INFO: Premain startup complete in 3,073ms
+2025-12-05T17:27:07,708+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:27:10,415+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:27:12,452+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:33:37,675+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:33:37,676+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:33:37,676+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:33:37,676+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:33:37,676+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T17:33:37,676+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:33:38,227+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:33:38,928+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:33:38,930+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T17:33:38,931+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:33:38,950+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:33:38,957+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:33:39,411+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:33:39,507+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:33:39,507+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:33:39,507+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,828ms
+2025-12-05T17:33:39,508+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:33:42,597+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:33:46,193+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:33:49,406+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:33:49,406+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:33:49,406+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:33:49,407+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:33:49,407+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T17:33:49,407+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:33:49,728+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:33:50,493+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:33:50,494+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T17:33:50,494+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:33:50,503+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:33:50,505+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:33:50,608+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:33:50,664+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:33:50,664+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:33:50,664+0000 [1 1] com.newrelic INFO: Premain startup complete in 1,760ms
+2025-12-05T17:33:50,665+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:33:54,004+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:33:56,111+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:41:10,730+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:41:10,730+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:41:10,731+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:41:10,731+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:41:10,731+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T17:41:10,731+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:41:11,134+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:41:11,953+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:41:11,955+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T17:41:11,955+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:41:11,997+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:41:12,003+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:41:12,186+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:41:12,298+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:41:12,299+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:41:12,299+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,348ms
+2025-12-05T17:41:12,300+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:41:15,036+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:41:17,456+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:41:42,861+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:41:42,861+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:41:42,861+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:41:42,861+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:41:42,861+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T17:41:42,861+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:41:43,199+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:41:44,022+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:41:44,025+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T17:41:44,025+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:41:44,052+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:41:44,058+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:41:44,206+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:41:44,269+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:41:44,269+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:41:44,269+0000 [1 1] com.newrelic INFO: Premain startup complete in 1,928ms
+2025-12-05T17:41:44,270+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:41:46,945+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:41:48,695+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:42:04,315+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:42:04,317+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:42:04,317+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:42:04,317+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:42:04,317+0000 [1 1] com.newrelic INFO: Agent Host: f47461359a2f IP: 172.20.0.4
+2025-12-05T17:42:04,317+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:42:04,730+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:42:05,353+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:42:05,356+0000 [1 1] com.newrelic INFO: Found container id: f47461359a2f0bbd060368c988dd047a82fb484cfd7aa3054dd47f3e4ada42ea
+2025-12-05T17:42:05,356+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:42:05,386+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:42:05,388+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:42:05,583+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:42:05,710+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:42:05,710+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:42:05,710+0000 [1 1] com.newrelic INFO: Premain startup complete in 1,883ms
+2025-12-05T17:42:05,711+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:42:07,776+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:42:11,684+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:43:29,208+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:50:44,089+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:50:44,090+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.4
+2025-12-05T17:50:44,090+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.4+7-LTS
+2025-12-05T17:50:44,091+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch amd64
+2025-12-05T17:50:44,091+0000 [1 1] com.newrelic INFO: Agent Host: 03c2274801d2 IP: 172.20.0.2
+2025-12-05T17:50:44,091+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:50:45,513+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:50:47,090+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:50:47,091+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:50:47,091+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:50:47,091+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:50:47,092+0000 [1 1] com.newrelic INFO: Agent Host: 13436270dd10 IP: 172.20.0.4
+2025-12-05T17:50:47,092+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:50:47,795+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:50:49,350+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:50:49,353+0000 [1 1] com.newrelic INFO: Found container id: 13436270dd10726f96b8361b0b7bb3bcd2fc58bf8f6246c6662e6e5f8a8eb291
+2025-12-05T17:50:49,353+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:50:49,379+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:50:49,382+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:50:49,883+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:50:50,001+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:50:50,001+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:50:50,001+0000 [1 1] com.newrelic INFO: Premain startup complete in 3,681ms
+2025-12-05T17:50:50,002+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:50:53,296+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:50:53,404+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:50:53,416+0000 [1 1] com.newrelic INFO: Found container id: 03c2274801d2eb38ffd11242d8abae5059426b89606fe1163626bee0b68bcb26
+2025-12-05T17:50:53,419+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:50:53,508+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:50:53,531+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:50:54,777+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:50:55,900+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:50:55,906+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6477463f
+2025-12-05T17:50:55,913+0000 [1 1] com.newrelic INFO: Premain startup complete in 13,583ms
+2025-12-05T17:50:55,936+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:51:02,856+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T17:51:11,275+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T17:51:20,934+0000 [1 53] com.newrelic INFO: Host name is 03c2274801d2, display host 03c2274801d2 for application language-service
+2025-12-05T17:51:20,962+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-05T17:51:22,534+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-05T17:51:23,894+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-05T17:51:23,894+0000 [1 53] com.newrelic INFO: Agent run id: BQQ2OYLFZKfOAHGEa1mD6O5pMxv8AAIBACdHIQEAAAABAgRYz9FsA8InSAHS6zj_0RJC2KuuUFlCa4lgb-EWNia-4LaLyyYDAAY4LjI1LjAADDAzYzIyNzQ4MDFkMgAQbGFuZ3VhZ2Utc2VydmljZQ
+2025-12-05T17:51:23,896+0000 [1 53] com.newrelic INFO: Agent 1@03c2274801d2/language-service connected to collector.newrelic.com:443
+2025-12-05T17:51:23,897+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1490014572
+2025-12-05T17:51:23,905+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-05T17:51:23,906+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-05T17:51:23,906+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-05T17:51:23,910+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-05T17:51:23,913+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T17:51:23,914+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T17:51:23,920+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-05T17:51:23,920+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-05T17:51:23,920+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-05T17:51:23,925+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-05T17:51:23,928+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T17:51:23,928+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T17:51:24,828+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application language-service. Auto instrumentation is enabled.
+2025-12-05T17:51:24,829+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-05T17:51:24,831+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-05T17:51:25,725+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T17:51:25,725+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T17:51:25,726+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T17:51:25,726+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T17:51:25,726+0000 [1 1] com.newrelic INFO: Agent Host: 13436270dd10 IP: 172.20.0.4
+2025-12-05T17:51:25,726+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T17:51:26,152+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T17:51:26,976+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T17:51:26,978+0000 [1 1] com.newrelic INFO: Found container id: 13436270dd10726f96b8361b0b7bb3bcd2fc58bf8f6246c6662e6e5f8a8eb291
+2025-12-05T17:51:26,978+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T17:51:26,991+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T17:51:26,994+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T17:51:27,153+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T17:51:27,302+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T17:51:27,302+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T17:51:27,303+0000 [1 1] com.newrelic INFO: Premain startup complete in 2,510ms
+2025-12-05T17:51:27,305+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T17:51:30,281+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T18:01:47,554+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T18:03:10,817+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T18:03:10,818+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.4
+2025-12-05T18:03:10,818+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.4+7-LTS
+2025-12-05T18:03:10,819+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch amd64
+2025-12-05T18:03:10,819+0000 [1 1] com.newrelic INFO: Agent Host: 36262477b8bb IP: 172.20.0.3
+2025-12-05T18:03:10,819+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T18:03:12,462+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T18:03:14,823+0000 [1 1] com.newrelic INFO: Writing to New Relic log file: /newrelic/logs/newrelic_agent.log
+2025-12-05T18:03:14,823+0000 [1 1] com.newrelic INFO: JRE vendor Eclipse Adoptium version 21.0.9
+2025-12-05T18:03:14,823+0000 [1 1] com.newrelic INFO: JVM vendor Eclipse Adoptium OpenJDK 64-Bit Server VM version 21.0.9+10-LTS
+2025-12-05T18:03:14,824+0000 [1 1] com.newrelic INFO: OS Linux version 6.10.14-linuxkit arch aarch64
+2025-12-05T18:03:14,824+0000 [1 1] com.newrelic INFO: Agent Host: 21ec846edd3b IP: 172.20.0.4
+2025-12-05T18:03:14,824+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 is initializing...
+2025-12-05T18:03:15,983+0000 [1 35] com.newrelic INFO: Instrumentation com.newrelic.instrumentation.jdbc-resultset is disabled. Skipping.
+2025-12-05T18:03:17,320+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T18:03:17,334+0000 [1 1] com.newrelic INFO: Found container id: 21ec846edd3b24d3ed303dc2ccca0162b4e6279e8b2b1f7ee22e6f80d4908c58
+2025-12-05T18:03:17,334+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T18:03:17,518+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T18:03:17,554+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T18:03:18,369+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T18:03:18,562+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T18:03:18,563+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6504e3b2
+2025-12-05T18:03:18,563+0000 [1 1] com.newrelic INFO: Premain startup complete in 4,626ms
+2025-12-05T18:03:18,567+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T18:03:19,772+0000 [1 1] com.newrelic INFO: Attempting to fetch container id from cgroups v2: /proc/self/mountinfo
+2025-12-05T18:03:19,797+0000 [1 1] com.newrelic INFO: Found container id: 36262477b8bb8fc96397c302f1525a104d5813476f1382723773d7280de96e90
+2025-12-05T18:03:19,802+0000 [1 1] com.newrelic INFO: No container id found in either fargate URL
+2025-12-05T18:03:20,031+0000 [1 1] com.newrelic INFO: Started Adaptive Sampler with sampling target 120 and report period 60 seconds.
+2025-12-05T18:03:20,113+0000 [1 1] com.newrelic.agent.RPMServiceManagerImpl INFO: Configured to connect to New Relic at collector.newrelic.com:443
+2025-12-05T18:03:20,929+0000 [1 1] com.newrelic INFO: Setting audit_mode to false
+2025-12-05T18:03:21,732+0000 [1 1] com.newrelic INFO: New Relic Agent v8.25.0 has started
+2025-12-05T18:03:21,734+0000 [1 1] com.newrelic INFO: Agent class loader: com.newrelic.bootstrap.BootstrapAgent$JVMAgentClassLoader@6477463f
+2025-12-05T18:03:21,737+0000 [1 1] com.newrelic INFO: Premain startup complete in 12,370ms
+2025-12-05T18:03:21,741+0000 [1 1] com.newrelic INFO: New Relic Security is completely disabled by one of the user provided config `security.enabled`, `security.agent.enabled` or `high_security`. Not loading security capabilities.
+2025-12-05T18:03:24,081+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T18:03:33,590+0000 [1 53] com.newrelic INFO: Host name is 21ec846edd3b, display host 21ec846edd3b for application SnippetSearcher-Backend
+2025-12-05T18:03:33,596+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-05T18:03:34,659+0000 [1 1] com.newrelic INFO: Server Info: Apache Tomcat/10.1.46
+2025-12-05T18:03:34,759+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-05T18:03:35,275+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-05T18:03:35,276+0000 [1 53] com.newrelic INFO: Agent run id: BRsj-1CyaJHpAHGEa1l9iOBpMx7MAAIBACdHIQEAAAABAgRZuCuUIeyEbt07JNPtMD3CzMoBYrTmJ56LKx9-4i5vgNSQjFgDAAY4LjI1LjAADDIxZWM4NDZlZGQzYgAXU25pcHBldFNlYXJjaGVyLUJhY2tlbmQ
+2025-12-05T18:03:35,277+0000 [1 53] com.newrelic INFO: Agent 1@21ec846edd3b/SnippetSearcher-Backend connected to collector.newrelic.com:443
+2025-12-05T18:03:35,280+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1505242004
+2025-12-05T18:03:35,292+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-05T18:03:35,292+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-05T18:03:35,292+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-05T18:03:35,294+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:35,295+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:35,295+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:35,301+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-05T18:03:35,301+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-05T18:03:35,301+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-05T18:03:35,304+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:35,305+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:35,305+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:36,736+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application SnippetSearcher-Backend. Auto instrumentation is enabled.
+2025-12-05T18:03:36,737+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-05T18:03:36,737+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-05T18:03:41,782+0000 [1 53] com.newrelic INFO: Host name is 36262477b8bb, display host 36262477b8bb for application language-service
+2025-12-05T18:03:41,809+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-05T18:03:42,781+0000 [1 53] com.newrelic INFO: Collector redirection to collector.newrelic.com:443
+2025-12-05T18:03:43,200+0000 [1 53] com.newrelic INFO: Max payload size is 1,000,000 bytes
+2025-12-05T18:03:43,200+0000 [1 53] com.newrelic INFO: Agent run id: BVRuXKm4Cgg0AHGEa1l-ac9pMx7MAAIBACdHIQEAAAABAgRYz9FsNiYkd7i7j8ljl8MC8VJaEE1YE0dvE4JyN3PXKA3pbpADAAY4LjI1LjAADDM2MjYyNDc3YjhiYgAQbGFuZ3VhZ2Utc2VydmljZQ
+2025-12-05T18:03:43,201+0000 [1 53] com.newrelic INFO: Agent 1@36262477b8bb/language-service connected to collector.newrelic.com:443
+2025-12-05T18:03:43,202+0000 [1 53] com.newrelic INFO: Reporting to: https://rpm.newrelic.com/accounts/7439467/applications/1490014572
+2025-12-05T18:03:43,206+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-05T18:03:43,206+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-05T18:03:43,206+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-05T18:03:43,209+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:43,210+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:43,211+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:43,213+0000 [1 53] com.newrelic INFO: Using default collector host: collector.newrelic.com
+2025-12-05T18:03:43,213+0000 [1 53] com.newrelic INFO: Using default metric ingest URI: https://metric-api.newrelic.com/metric/v1
+2025-12-05T18:03:43,213+0000 [1 53] com.newrelic INFO: Using default event ingest URI: https://insights-collector.newrelic.com/v1/accounts/events
+2025-12-05T18:03:43,217+0000 [1 53] com.newrelic INFO: The root sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:43,217+0000 [1 53] com.newrelic INFO: The remote_parent_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:43,217+0000 [1 53] com.newrelic INFO: The remote_parent_not_sampled sampler was configured to use the adaptive sampler type.
+2025-12-05T18:03:43,488+0000 [1 53] com.newrelic INFO: Real user monitoring is enabled for application language-service. Auto instrumentation is enabled.
+2025-12-05T18:03:43,491+0000 [1 53] com.newrelic INFO: Updating shared Adaptive Sampler sampling target to 120
+2025-12-05T18:03:43,495+0000 [1 53] com.newrelic INFO: New Relic JFR Monitor is disabled: JFR config has not been enabled in the Java agent.
+2025-12-05T18:40:43,440+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T18:40:43,575+0000 [1 76] com.newrelic ERROR: Remote metric_data call failed : java.net.UnknownHostException: collector.newrelic.com: Name or service not known.
+2025-12-05T18:40:43,583+0000 [1 76] com.newrelic INFO: An unexpected error occurred sending metric data to New Relic. Please file a support ticket once you have seen several of these messages in a short period of time: java.net.UnknownHostException: collector.newrelic.com: Name or service not known
+2025-12-05T18:44:15,248+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T18:44:15,338+0000 [1 79] com.newrelic ERROR: Remote metric_data call failed : java.net.UnknownHostException: collector.newrelic.com: Name or service not known.
+2025-12-05T18:44:15,338+0000 [1 79] com.newrelic INFO: An unexpected error occurred sending metric data to New Relic. Please file a support ticket once you have seen several of these messages in a short period of time: java.net.UnknownHostException: collector.newrelic.com: Name or service not known
+2025-12-05T18:44:17,588+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : java.net.UnknownHostException: collector.newrelic.com: Name or service not known.
+2025-12-05T18:44:17,610+0000 [1 76] com.newrelic ERROR: Remote metric_data call failed : java.net.UnknownHostException: collector.newrelic.com.
+2025-12-05T18:44:17,611+0000 [1 76] com.newrelic INFO: An unexpected error occurred sending metric data to New Relic. Please file a support ticket once you have seen several of these messages in a short period of time: java.net.UnknownHostException: collector.newrelic.com
+2025-12-05T20:06:21,541+0000 [1 79] com.newrelic INFO: Successfully reconnected to the New Relic data service.
+2025-12-05T20:06:27,260+0000 [1 76] com.newrelic INFO: Successfully reconnected to the New Relic data service.
+2025-12-05T20:38:35,820+0000 [1 76] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T20:39:02,695+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T20:56:09,322+0000 [1 79] com.newrelic ERROR: Remote get_agent_commands call failed : com.newrelic.agent.deps.org.apache.http.NoHttpResponseException: collector.newrelic.com:443 failed to respond.
+2025-12-05T21:10:00,619+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
+2025-12-05T21:10:03,430+0000 [1 25] com.newrelic.agent.core.CoreServiceImpl INFO: JVM is shutting down
