@@ -2,6 +2,7 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.*;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
@@ -9,7 +10,6 @@ import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
 import com.snippetsearcher.snippet.dto.response.*;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
-import com.snippetsearcher.snippet.language.LanguageClient;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.model.SnippetTest;
@@ -147,8 +147,7 @@ public class SnippetService {
     // 2) Pedimos a permission-service qué snippets puede ver este usuario
     var permissions = permissionClient.listSnippetPermissions(jwt.getTokenValue());
 
-    boolean hasAccess = permissions.stream()
-            .anyMatch(p -> p.snippetId().equals(snippetId));
+    boolean hasAccess = permissions.stream().anyMatch(p -> p.snippetId().equals(snippetId));
 
     if (!hasAccess) {
       // Podés tirar tu propia excepción 404/403 si preferís
@@ -156,38 +155,30 @@ public class SnippetService {
     }
 
     // 3) Cargamos el snippet desde la base (da igual si el permiso es OWNER o SHARED)
-    Snippet snippet = snippetRepository.findById(snippetId)
+    Snippet snippet =
+        snippetRepository
+            .findById(snippetId)
             .orElseThrow(() -> new IllegalStateException("Snippet no encontrado"));
 
     // 4) Lógica original: contenido, lint, tests, compliance
     String content = downloadSnippetContent(snippet);
 
     List<SnippetLintErrorResponse> lintErrors =
-            collectLintErrors(snippet.getLanguage(), snippet.getVersion(), content);
+        collectLintErrors(snippet.getLanguage(), snippet.getVersion(), content);
 
     List<SnippetTestResponse> tests =
-            snippetTestRepository.findBySnippetId(snippet.getId()).stream()
-                    .map(SnippetTestResponse::fromEntity)
-                    .toList();
+        snippetTestRepository.findBySnippetId(snippet.getId()).stream()
+            .map(SnippetTestResponse::fromEntity)
+            .toList();
 
     SnippetComplianceStatus complianceStatus =
-            lintErrors.isEmpty()
-                    ? SnippetComplianceStatus.VALID
-                    : SnippetComplianceStatus.INVALID;
+        lintErrors.isEmpty() ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
 
-    String complianceMessage =
-            lintErrors.isEmpty() ? null : lintErrors.get(0).message();
+    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.get(0).message();
 
     return SnippetResponse.fromEntity(
-            snippet,
-            content,
-            lintErrors,
-            tests,
-            complianceStatus,
-            complianceMessage
-    );
+        snippet, content, lintErrors, tests, complianceStatus, complianceMessage);
   }
-
 
   @Transactional
   public SnippetResponse updateSnippet(
@@ -237,13 +228,14 @@ public class SnippetService {
       UUID currentUserId = user.id();
 
       return users.stream()
-              .filter(u -> !currentUserId.equals(u.id()))
-              .map(u -> new FriendsResponse(
-                      u.id().toString(),     // UUID → string
+          .filter(u -> !currentUserId.equals(u.id()))
+          .map(
+              u ->
+                  new FriendsResponse(
+                      u.id().toString(), // UUID → string
                       u.name(),
-                      u.email()
-              ))
-              .toList();
+                      u.email()))
+          .toList();
 
     } catch (RestClientException | IllegalStateException ex) {
       log.warn("No se pudo obtener la lista de amigos: {}", ex.getMessage());
