@@ -2,18 +2,21 @@ package com.snippetsearcher.snippet.service;
 
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
-import com.snippetsearcher.snippet.language.LanguageClient;
-import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.dto.PermissionTypeDto;
-import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
-import com.snippetsearcher.snippet.dto.UserAccountDto;
+import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.*;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
-import com.snippetsearcher.snippet.dto.response.*;
+import com.snippetsearcher.snippet.dto.response.FriendsResponse;
+import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetLintErrorResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetListItemResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetTestExecutionResponse;
+import com.snippetsearcher.snippet.dto.response.SnippetTestResponse;
 import com.snippetsearcher.snippet.exception.SnippetNotFoundException;
+import com.snippetsearcher.snippet.jobs.SnippetJobProducer;
 import com.snippetsearcher.snippet.model.Snippet;
 import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.model.SnippetTest;
@@ -25,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,25 +54,31 @@ public class SnippetService {
   private final SnippetRepository snippetRepository;
   private final AssetClient assetClient;
   private final PermissionClient permissionClient;
-  private final LanguageValidationService languageValidationService;
   private final LanguageClient languageClient;
   private final SnippetTestRepository snippetTestRepository;
+  private final SnippetJobProducer jobProducer;
+  private final LintingRulesService lintingRulesService;
+  private final LintIssueFilter lintIssueFilter;
   private final String snippetsContainer;
 
   public SnippetService(
       SnippetRepository snippetRepository,
       AssetClient assetClient,
       PermissionClient permissionClient,
-      LanguageValidationService languageValidationService,
       LanguageClient languageClient,
       SnippetTestRepository snippetTestRepository,
+      SnippetJobProducer jobProducer,
+      LintingRulesService lintingRulesService,
+      LintIssueFilter lintIssueFilter,
       @Value("${asset-service.snippets-container:snippets}") String snippetsContainer) {
     this.snippetRepository = snippetRepository;
     this.assetClient = assetClient;
     this.permissionClient = permissionClient;
-    this.languageValidationService = languageValidationService;
     this.languageClient = languageClient;
     this.snippetTestRepository = snippetTestRepository;
+    this.jobProducer = jobProducer;
+    this.lintingRulesService = lintingRulesService;
+    this.lintIssueFilter = lintIssueFilter;
     this.snippetsContainer = snippetsContainer;
   }
 
@@ -145,20 +155,48 @@ public class SnippetService {
         snippetsPage.getNumber(), snippetsPage.getSize(), snippetsPage.getTotalElements(), items);
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public SnippetResponse getSnippet(Jwt jwt, UUID snippetId) {
     UserAccountDto user = ensureUser(jwt);
-    Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
+    UUID userId = user.id();
+
+    // 2) Pedimos a permission-service qué snippets puede ver este usuario
+    var permissions = permissionClient.listSnippetPermissions(jwt.getTokenValue());
+
+    boolean hasAccess = permissions.stream().anyMatch(p -> p.snippetId().equals(snippetId));
+
+    if (!hasAccess) {
+      // Podés tirar tu propia excepción 404/403 si preferís
+      throw new IllegalStateException("Snippet no encontrado o sin permisos");
+    }
+
+    // 3) Cargamos el snippet desde la base (da igual si el permiso es OWNER o SHARED)
+    Snippet snippet =
+        snippetRepository
+            .findById(snippetId)
+            .orElseThrow(() -> new IllegalStateException("Snippet no encontrado"));
+
+    // 4) Lógica original: contenido, lint, tests, compliance
     String content = downloadSnippetContent(snippet);
+
     List<SnippetLintErrorResponse> lintErrors =
         collectLintErrors(snippet.getLanguage(), snippet.getVersion(), content);
+
     List<SnippetTestResponse> tests =
         snippetTestRepository.findBySnippetId(snippet.getId()).stream()
             .map(SnippetTestResponse::fromEntity)
             .toList();
+
+    boolean complianceUpdated = applyLintResult(snippet, lintErrors);
+    if (complianceUpdated) {
+      snippetRepository.save(snippet);
+    }
+
     SnippetComplianceStatus complianceStatus =
         lintErrors.isEmpty() ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
-    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.getFirst().message();
+
+    String complianceMessage = lintErrors.isEmpty() ? null : lintErrors.get(0).message();
+
     return SnippetResponse.fromEntity(
         snippet, content, lintErrors, tests, complianceStatus, complianceMessage);
   }
@@ -179,6 +217,9 @@ public class SnippetService {
     snippet.setAssetKey(assetKey);
     markSnippetValid(snippet);
     snippet = snippetRepository.save(snippet);
+
+    jobProducer.enqueueRunAllTestsForSnippet(snippet.getId());
+
     return SnippetResponse.fromEntity(snippet);
   }
 
@@ -214,20 +255,20 @@ public class SnippetService {
       UUID currentUserId = user.id();
 
       return users.stream()
-              .filter(u -> !currentUserId.equals(u.id()))
-              .map(u -> new FriendsResponse(
-                      u.id().toString(),     // UUID → string
+          .filter(u -> !currentUserId.equals(u.id()))
+          .map(
+              u ->
+                  new FriendsResponse(
+                      u.id().toString(), // UUID → string
                       u.name(),
-                      u.email()
-              ))
-              .toList();
+                      u.email()))
+          .toList();
 
     } catch (RestClientException | IllegalStateException ex) {
       log.warn("No se pudo obtener la lista de amigos: {}", ex.getMessage());
       return List.of();
     }
   }
-
 
   @Transactional
   public SnippetTestExecutionResponse executeSnippetTest(Jwt jwt, UUID snippetId, UUID testId) {
@@ -285,7 +326,7 @@ public class SnippetService {
         collectLintErrors(language, version, new String(content, StandardCharsets.UTF_8));
 
     if (!errors.isEmpty()) {
-      SnippetLintErrorResponse firstError = errors.getFirst();
+      SnippetLintErrorResponse firstError = errors.get(0);
       String violatedRule =
           StringUtils.hasText(firstError.rule()) ? firstError.rule() : "desconocida";
       throw new IllegalArgumentException(
@@ -310,14 +351,17 @@ public class SnippetService {
 
   private List<SnippetLintErrorResponse> collectLintErrors(
       String language, String version, String content) {
-    var validation =
-        languageValidationService.validate(language, normalizeVersion(version), content);
-    if (validation == null || validation.valid() || validation.errors() == null) {
-      return List.of();
-    }
+    LanguageDtos.AnalyzeResponse response =
+        languageClient.analyze(
+            new LanguageDtos.AnalyzeRequest(language, normalizeVersion(version), content));
 
-    return validation.errors().stream()
-        .map(e -> new SnippetLintErrorResponse(e.rule(), e.line(), e.col(), e.message()))
+    List<LanguageDtos.AnalyzeIssue> filtered =
+        lintIssueFilter.filter(
+            response != null ? response.issues() : List.of(),
+            lintingRulesService.getLintingRules());
+
+    return filtered.stream()
+        .map(i -> new SnippetLintErrorResponse(i.rule(), i.startLine(), i.startCol(), i.message()))
         .toList();
   }
 
@@ -337,6 +381,7 @@ public class SnippetService {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
   }
+
 
   private void updateTestResult(SnippetTest test, LanguageDtos.ExecuteResponse response) {
     test.setLastRunAt(OffsetDateTime.now());
@@ -420,6 +465,28 @@ public class SnippetService {
   private void markSnippetValid(Snippet snippet) {
     snippet.setComplianceStatus(SnippetComplianceStatus.VALID);
     snippet.setComplianceMessage(null);
+  }
+
+  private boolean applyLintResult(Snippet snippet, List<SnippetLintErrorResponse> lintErrors) {
+    SnippetComplianceStatus newStatus =
+        lintErrors == null || lintErrors.isEmpty()
+            ? SnippetComplianceStatus.VALID
+            : SnippetComplianceStatus.INVALID;
+    String newMessage =
+        lintErrors == null || lintErrors.isEmpty() ? null : lintErrors.getFirst().message();
+
+    if (newStatus == snippet.getComplianceStatus()
+        && Objects.equals(newMessage, snippet.getComplianceMessage())) {
+      return false;
+    }
+
+    snippet.setComplianceStatus(newStatus);
+    snippet.setComplianceMessage(newMessage);
+    return true;
+  }
+
+  public UserAccountDto ensureUserForController(Jwt jwt) {
+    return ensureUser(jwt);
   }
 
   private UserAccountDto ensureUser(Jwt jwt) {

@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Deprecated in favor of {@link RulesController} which persists rules via asset-service and
+ * triggers batch jobs. Kept to avoid breaking existing consumers but should not be used by new
+ * clients.
+ */
+@Deprecated
 @RestController
 @RequestMapping("/api/rules")
 public class RuleController {
