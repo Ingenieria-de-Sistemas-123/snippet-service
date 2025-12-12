@@ -58,3 +58,4 @@ public class SnippetLanguageService {
         response.changed(), formatted, request.content(), response.diagnostics());
   }
 }
+
