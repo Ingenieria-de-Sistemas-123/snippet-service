@@ -375,13 +375,12 @@ public class SnippetService {
   private LanguageDtos.ExecuteResponse executeTest(Snippet snippet, String executableContent) {
     try {
       return languageClient.execute(
-              new LanguageDtos.ExecuteRequest(
-                      snippet.getLanguage(), snippet.getVersion(), executableContent, null));
+          new LanguageDtos.ExecuteRequest(
+              snippet.getLanguage(), snippet.getVersion(), executableContent, null));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
   }
-
 
   private void updateTestResult(SnippetTest test, LanguageDtos.ExecuteResponse response) {
     test.setLastRunAt(OffsetDateTime.now());
@@ -554,6 +553,7 @@ public class SnippetService {
     }
     return assetKey.substring(lastDot + 1);
   }
+
   @Transactional(readOnly = true)
   public LanguageDtos.ExecuteResponse executeSnippet(Jwt jwt, UUID snippetId, String input) {
     UserAccountDto user = ensureUser(jwt);
@@ -563,15 +563,10 @@ public class SnippetService {
 
     try {
       return languageClient.execute(
-              new LanguageDtos.ExecuteRequest(
-                      snippet.getLanguage(),
-                      snippet.getVersion(),
-                      snippetContent,
-                      input
-              ));
+          new LanguageDtos.ExecuteRequest(
+              snippet.getLanguage(), snippet.getVersion(), snippetContent, input));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el snippet.", ex);
     }
   }
-
 }
