@@ -35,6 +35,17 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   snippet-service:
     build: .
     container_name: snippet-service
@@ -45,6 +56,8 @@ services:
         condition: service_started
       asset-service:
         condition: service_started
+      redis:
+        condition: service_healthy
     env_file: [.env]
     ports:
       - "8081:8080"

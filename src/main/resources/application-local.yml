@@ -9,6 +9,11 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      url: ${SPRING_DATA_REDIS_URL:redis://redis:6379}
 
 logging:
   level:
