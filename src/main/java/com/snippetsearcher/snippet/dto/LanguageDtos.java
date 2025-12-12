@@ -9,7 +9,8 @@ public class LanguageDtos {
 
   public record ValidateResponse(boolean valid, List<ValidationError> errors) {}
 
-  public record FormatRequest(String language, String version, String content, Boolean check, String configJson) {}
+  public record FormatRequest(
+      String language, String version, String content, Boolean check, String configJson) {}
 
   public record FormatResponse(boolean changed, String formatted, String diagnostics) {}
 

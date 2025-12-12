@@ -32,8 +32,7 @@ class FormatterConfigBuilderTest {
 
   @Test
   void writesNumericValuesForIndentSize() throws Exception {
-    String json =
-        builder.buildConfigJson(List.of(new Rule("indentSize", "indent", true, 4)));
+    String json = builder.buildConfigJson(List.of(new Rule("indentSize", "indent", true, 4)));
 
     JsonNode node = mapper.readTree(json);
     assertEquals(4, node.get("indentSize").asInt());

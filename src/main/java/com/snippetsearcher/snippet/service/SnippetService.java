@@ -3,14 +3,12 @@ package com.snippetsearcher.snippet.service;
 import com.snippetsearcher.snippet.client.AssetClient;
 import com.snippetsearcher.snippet.client.PermissionClient;
 import com.snippetsearcher.snippet.client.language.LanguageClient;
-import com.snippetsearcher.snippet.dto.LanguageDtos;
-import com.snippetsearcher.snippet.dto.PermissionTypeDto;
-import com.snippetsearcher.snippet.dto.SnippetPermissionDto;
-import com.snippetsearcher.snippet.dto.UserAccountDto;
+import com.snippetsearcher.snippet.dto.*;
 import com.snippetsearcher.snippet.dto.request.CreateSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.ListSnippetsQuery;
 import com.snippetsearcher.snippet.dto.request.ShareSnippetRequest;
 import com.snippetsearcher.snippet.dto.request.UpdateSnippetRequest;
+import com.snippetsearcher.snippet.dto.response.FriendsResponse;
 import com.snippetsearcher.snippet.dto.response.ListSnippetsResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetLintErrorResponse;
 import com.snippetsearcher.snippet.dto.response.SnippetListItemResponse;
@@ -30,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -156,7 +155,7 @@ public class SnippetService {
         snippetsPage.getNumber(), snippetsPage.getSize(), snippetsPage.getTotalElements(), items);
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public SnippetResponse getSnippet(Jwt jwt, UUID snippetId) {
     UserAccountDto user = ensureUser(jwt);
     UUID userId = user.id();
@@ -187,6 +186,11 @@ public class SnippetService {
         snippetTestRepository.findBySnippetId(snippet.getId()).stream()
             .map(SnippetTestResponse::fromEntity)
             .toList();
+
+    boolean complianceUpdated = applyLintResult(snippet, lintErrors);
+    if (complianceUpdated) {
+      snippetRepository.save(snippet);
+    }
 
     SnippetComplianceStatus complianceStatus =
         lintErrors.isEmpty() ? SnippetComplianceStatus.VALID : SnippetComplianceStatus.INVALID;
@@ -353,13 +357,11 @@ public class SnippetService {
 
     List<LanguageDtos.AnalyzeIssue> filtered =
         lintIssueFilter.filter(
-            response != null ? response.issues() : List.of(), lintingRulesService.getLintingRules());
+            response != null ? response.issues() : List.of(),
+            lintingRulesService.getLintingRules());
 
     return filtered.stream()
-        .map(
-            i ->
-                new SnippetLintErrorResponse(
-                    i.rule(), i.startLine(), i.startCol(), i.message()))
+        .map(i -> new SnippetLintErrorResponse(i.rule(), i.startLine(), i.startCol(), i.message()))
         .toList();
   }
 
@@ -462,6 +464,28 @@ public class SnippetService {
   private void markSnippetValid(Snippet snippet) {
     snippet.setComplianceStatus(SnippetComplianceStatus.VALID);
     snippet.setComplianceMessage(null);
+  }
+
+  private boolean applyLintResult(Snippet snippet, List<SnippetLintErrorResponse> lintErrors) {
+    SnippetComplianceStatus newStatus =
+        lintErrors == null || lintErrors.isEmpty()
+            ? SnippetComplianceStatus.VALID
+            : SnippetComplianceStatus.INVALID;
+    String newMessage =
+        lintErrors == null || lintErrors.isEmpty() ? null : lintErrors.getFirst().message();
+
+    if (newStatus == snippet.getComplianceStatus()
+        && Objects.equals(newMessage, snippet.getComplianceMessage())) {
+      return false;
+    }
+
+    snippet.setComplianceStatus(newStatus);
+    snippet.setComplianceMessage(newMessage);
+    return true;
+  }
+
+  public UserAccountDto ensureUserForController(Jwt jwt) {
+    return ensureUser(jwt);
   }
 
   private UserAccountDto ensureUser(Jwt jwt) {

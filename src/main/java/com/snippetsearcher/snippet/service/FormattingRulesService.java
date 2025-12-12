@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * UC 11: habilitar / deshabilitar reglas de formatting.
- * UC 12: al modificar reglas, disparar formateo automático (via jobs).
+ * UC 11: habilitar / deshabilitar reglas de formatting. UC 12: al modificar reglas, disparar
+ * formateo automático (via jobs).
  */
 @Service
 public class FormattingRulesService {
@@ -45,10 +45,7 @@ public class FormattingRulesService {
     this.jobProducer = jobProducer;
   }
 
-  /**
-   * Devuelve la lista de reglas de formatting.
-   * Si no hay asset guardado, vuelve a defaults.
-   */
+  /** Devuelve la lista de reglas de formatting. Si no hay asset guardado, vuelve a defaults. */
   public List<Rule> getFormattingRules() {
     try {
       byte[] data = assetClient.downloadSnippet(RULES_CONTAINER + "/" + FORMAT_RULES_KEY);
@@ -61,9 +58,7 @@ public class FormattingRulesService {
     }
   }
 
-  /**
-   * Guarda las reglas y dispara el formateo masivo.
-   */
+  /** Guarda las reglas y dispara el formateo masivo. */
   public List<Rule> updateFormattingRules(List<Rule> rules, UUID adminId) {
     try {
       String json = objectMapper.writeValueAsString(rules);
@@ -81,10 +76,10 @@ public class FormattingRulesService {
   }
 
   /**
-   * Construye el JSON de configuración que usa el CLI de PrintScript para formatear,
-   * a partir de las reglas actualmente almacenadas (asset-service).
+   * Construye el JSON de configuración que usa el CLI de PrintScript para formatear, a partir de
+   * las reglas actualmente almacenadas (asset-service).
    *
-   * Este JSON se mandará al language-service como configJson.
+   * <p>Este JSON se mandará al language-service como configJson.
    */
   public String buildFormatterConfigJsonFromStoredRules() {
     List<Rule> rules = getFormattingRules();

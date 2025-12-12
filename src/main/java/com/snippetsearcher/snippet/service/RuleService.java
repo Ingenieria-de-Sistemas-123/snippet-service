@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Deprecated: legacy persistence of rules in DB. Prefer {@link FormattingRulesService} and
- * {@link com.snippetsearcher.snippet.service.LintingRulesService} which back rules in asset-service
- * and trigger the appropriate jobs.
+ * Deprecated: legacy persistence of rules in DB. Prefer {@link FormattingRulesService} and {@link
+ * com.snippetsearcher.snippet.service.LintingRulesService} which back rules in asset-service and
+ * trigger the appropriate jobs.
  */
 @Deprecated
 @Service
