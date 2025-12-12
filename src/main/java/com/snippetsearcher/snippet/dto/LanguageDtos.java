@@ -9,7 +9,8 @@ public class LanguageDtos {
 
   public record ValidateResponse(boolean valid, List<ValidationError> errors) {}
 
-  public record FormatRequest(String language, String version, String content, Boolean check, String configJson) {}
+  public record FormatRequest(
+      String language, String version, String content, Boolean check, String configJson) {}
 
   public record FormatResponse(boolean changed, String formatted, String diagnostics) {}
 
@@ -26,7 +27,7 @@ public class LanguageDtos {
 
   public record AnalyzeResponse(List<AnalyzeIssue> issues, String raw) {}
 
-  public record ExecuteRequest(String language, String version, String content) {}
+  public record ExecuteRequest(String language, String version, String content, String input) {}
 
   public record ExecuteResponse(int exitCode, String stdout, String stderr) {}
 }

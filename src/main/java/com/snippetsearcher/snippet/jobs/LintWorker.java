@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.snippetsearcher.snippet.client.language.LanguageClient;
 import com.snippetsearcher.snippet.dto.LanguageDtos;
 import com.snippetsearcher.snippet.model.Snippet;
+import com.snippetsearcher.snippet.model.SnippetComplianceStatus;
 import com.snippetsearcher.snippet.repository.SnippetRepository;
 import com.snippetsearcher.snippet.service.LintIssueFilter;
 import com.snippetsearcher.snippet.service.LintingRulesService;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,9 +89,28 @@ public class LintWorker {
               filtered.size());
         }
 
+        applyComplianceResult(snippet, filtered);
+
       } catch (Exception ex) {
         log.error("Error linteando snippet {}. Se continúa.", snippet.getId(), ex);
       }
     }
+  }
+
+  private void applyComplianceResult(Snippet snippet, List<LanguageDtos.AnalyzeIssue> issues) {
+    SnippetComplianceStatus newStatus =
+        issues == null || issues.isEmpty()
+            ? SnippetComplianceStatus.VALID
+            : SnippetComplianceStatus.INVALID;
+    String newMessage = issues == null || issues.isEmpty() ? null : issues.getFirst().message();
+
+    if (newStatus == snippet.getComplianceStatus()
+        && Objects.equals(newMessage, snippet.getComplianceMessage())) {
+      return;
+    }
+
+    snippet.setComplianceStatus(newStatus);
+    snippet.setComplianceMessage(newMessage);
+    snippetRepository.save(snippet);
   }
 }
