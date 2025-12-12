@@ -198,8 +198,8 @@ public class SnippetTestService {
   private LanguageDtos.ExecuteResponse executeTest(Snippet snippet, String executableContent) {
     try {
       return languageClient.execute(
-              new LanguageDtos.ExecuteRequest(
-                      snippet.getLanguage(), snippet.getVersion(), executableContent, ""));
+          new LanguageDtos.ExecuteRequest(
+              snippet.getLanguage(), snippet.getVersion(), executableContent, ""));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
@@ -212,4 +212,3 @@ public class SnippetTestService {
     test.setLastRunError(response.stderr());
   }
 }
-

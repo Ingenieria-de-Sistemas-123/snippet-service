@@ -11,25 +11,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/snippets")
 public class SnippetExecutionController {
 
-    private final SnippetService snippetService;
+  private final SnippetService snippetService;
 
-    public SnippetExecutionController(SnippetService snippetService) {
-        this.snippetService = snippetService;
-    }
+  public SnippetExecutionController(SnippetService snippetService) {
+    this.snippetService = snippetService;
+  }
 
-    public record ExecuteSnippetRequest(String input) {}
+  public record ExecuteSnippetRequest(String input) {}
 
-    public record ExecuteSnippetResponse(int exitCode, String stdout, String stderr) {}
+  public record ExecuteSnippetResponse(int exitCode, String stdout, String stderr) {}
 
-    @PostMapping("/{id}/execute")
-    public ExecuteSnippetResponse execute(
-            @AuthenticationPrincipal Jwt jwt,
-            @PathVariable("id") UUID snippetId,
-            @RequestBody ExecuteSnippetRequest req) {
+  @PostMapping("/{id}/execute")
+  public ExecuteSnippetResponse execute(
+      @AuthenticationPrincipal Jwt jwt,
+      @PathVariable("id") UUID snippetId,
+      @RequestBody ExecuteSnippetRequest req) {
 
-        LanguageDtos.ExecuteResponse res =
-                snippetService.executeSnippet(jwt, snippetId, req.input());
+    LanguageDtos.ExecuteResponse res = snippetService.executeSnippet(jwt, snippetId, req.input());
 
-        return new ExecuteSnippetResponse(res.exitCode(), res.stdout(), res.stderr());
-    }
+    return new ExecuteSnippetResponse(res.exitCode(), res.stdout(), res.stderr());
+  }
 }
