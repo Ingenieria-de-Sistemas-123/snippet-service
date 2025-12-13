@@ -55,16 +55,33 @@ jobs:
           SAFE_BRANCH="${GITHUB_REF_NAME//\//-}"
           echo "branch=${SAFE_BRANCH}" >> "$GITHUB_OUTPUT"
 
+      - name: Compute docker tags
+        id: docker_tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMAGE="ghcr.io/${{ steps.img.outputs.owner }}/snippet-service"
+          TAGS=(
+            "${IMAGE}:${{ steps.tag.outputs.value }}"
+            "${IMAGE}:${{ steps.tag.outputs.branch }}"
+          )
+          # 'latest' solo para main (prod), para que dev no lo pise.
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            TAGS+=("${IMAGE}:latest")
+          fi
+          {
+            echo "value<<EOF"
+            printf '%s\n' "${TAGS[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Build and Push Image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:latest
-            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.value }}
-            ghcr.io/${{ steps.img.outputs.owner }}/snippet-service:${{ steps.tag.outputs.branch }}
+          tags: ${{ steps.docker_tags.outputs.value }}
 
   deploy-dev:
     name: Deploy to VM (dev)
