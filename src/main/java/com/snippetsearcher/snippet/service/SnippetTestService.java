@@ -73,7 +73,9 @@ public class SnippetTestService {
     SnippetTest test = new SnippetTest();
     test.setSnippet(snippet);
     test.setName(request.name());
-    test.setScript(request.script());
+    test.setDescription(request.description());
+    test.setInput(request.input());
+    test.setExpectedOutput(request.expectedOutput());
     test.setLastRunAt(null);
     test.setLastRunExitCode(null);
     test.setLastRunOutput(null);
@@ -97,7 +99,9 @@ public class SnippetTestService {
             .orElseThrow(() -> new IllegalArgumentException("El test indicado no existe."));
 
     test.setName(request.name());
-    test.setScript(request.script());
+    test.setDescription(request.description());
+    test.setInput(request.input());
+    test.setExpectedOutput(request.expectedOutput());
 
     test = snippetTestRepository.save(test);
     return SnippetTestResponse.fromEntity(test);
@@ -131,13 +135,15 @@ public class SnippetTestService {
             .orElseThrow(() -> new IllegalArgumentException("El test indicado no existe."));
 
     String snippetContent = downloadSnippetContent(snippet);
-    String executableContent = buildExecutableContent(snippetContent, test.getScript());
-
-    LanguageDtos.ExecuteResponse response = executeTest(snippet, executableContent);
+    LanguageDtos.ExecuteResponse response = executeTest(snippet, snippetContent, test.getInput());
     updateTestResult(test, response);
     snippetTestRepository.save(test);
 
-    boolean passed = response.exitCode() == 0;
+    boolean passed =
+        response.exitCode() == 0
+            && response.stdout() != null
+            && response.stdout().trim().equals(
+                test.getExpectedOutput() != null ? test.getExpectedOutput().trim() : "");
     return new SnippetTestExecutionResponse(
         test.getId(),
         passed,
@@ -188,18 +194,12 @@ public class SnippetTestService {
     }
   }
 
-  private String buildExecutableContent(String snippetContent, String testScript) {
-    if (!StringUtils.hasText(testScript)) {
-      throw new IllegalArgumentException("El script del test es obligatorio.");
-    }
-    return snippetContent + System.lineSeparator() + System.lineSeparator() + testScript;
-  }
-
-  private LanguageDtos.ExecuteResponse executeTest(Snippet snippet, String executableContent) {
+  private LanguageDtos.ExecuteResponse executeTest(
+      Snippet snippet, String executableContent, String input) {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent, ""));
+              snippet.getLanguage(), snippet.getVersion(), executableContent, input));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }

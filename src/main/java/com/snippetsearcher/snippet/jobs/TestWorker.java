@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class TestWorker {
@@ -46,6 +47,7 @@ public class TestWorker {
   }
 
   @Scheduled(fixedDelay = 2000)
+  @Transactional
   public void pollQueue() {
     String json = redisTemplate.opsForList().rightPop(TEST_QUEUE);
     if (json == null) return;
@@ -63,6 +65,12 @@ public class TestWorker {
   }
 
   private void runAllTestsForSnippet(UUID snippetId) {
+    // Transactional to avoid autocommit issues when reading LOB columns (lastRunOutput/error).
+    runAllTestsForSnippetTx(snippetId);
+  }
+
+  @Transactional
+  protected void runAllTestsForSnippetTx(UUID snippetId) {
     log.info("Ejecutando tests automáticos para snippet {}", snippetId);
 
     Snippet snippet =
@@ -76,13 +84,10 @@ public class TestWorker {
     List<SnippetTest> tests = snippetTestRepository.findBySnippetId(snippet.getId());
     for (SnippetTest test : tests) {
       try {
-        String executableContent =
-            snippetContent + System.lineSeparator() + System.lineSeparator() + test.getScript();
-
         LanguageDtos.ExecuteResponse response =
             languageClient.execute(
                 new LanguageDtos.ExecuteRequest(
-                    snippet.getLanguage(), snippet.getVersion(), executableContent, ""));
+                    snippet.getLanguage(), snippet.getVersion(), snippetContent, test.getInput()));
 
         test.setLastRunAt(OffsetDateTime.now());
         test.setLastRunExitCode(response.exitCode());
