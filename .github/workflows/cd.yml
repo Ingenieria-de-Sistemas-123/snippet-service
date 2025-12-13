@@ -103,30 +103,37 @@ jobs:
             docker image prune -f --filter "dangling=true"
 
   deploy-prod:
-    name: Deploy snippet-service (prod)
-    needs: publish
+    name: Deploy to VM (prod)
     runs-on: ubuntu-latest
-    if: ${{ needs.publish.result == 'success' && github.ref == 'refs/heads/main' }}
+    needs: publish
+    if: needs.publish.result == 'success' && github.ref == 'refs/heads/main'
     steps:
-      - name: Deploy to prod VM
+      - name: Deploy updated service
         uses: appleboy/ssh-action@v1.0.3
         env:
-          GHCR_LOGIN_TOKEN: ${{ secrets.PROD_GHCR_TOKEN }}
-          GHCR_LOGIN_USER: ${{ secrets.PROD_GHCR_USER }}
+          GHCR_LOGIN_TOKEN_PROD: ${{ secrets.GHCR_TOKEN }}
+          GHCR_LOGIN_USER_PROD: ${{ secrets.GHCR_USER }}
         with:
-          host: ${{ secrets.PROD_VM_HOST }}
-          username: ${{ secrets.PROD_VM_USER }}
-          key: ${{ secrets.PROD_DEPLOY_SSH_KEY }}
-          envs: GHCR_LOGIN_TOKEN,GHCR_LOGIN_USER
+          host: ${{ secrets.VM_HOST_PROD }}
+          username: ${{ secrets.VM_USER_PROD }}
+          key: ${{ secrets.DEPLOY_SSH_KEY_PROD }}
+          # Esto hace que esas envs se exporten al bash de la VM
+          envs: GHCR_LOGIN_TOKEN_PROD,GHCR_LOGIN_USER_PROD
           script: |
             set -euo pipefail
             echo "[deploy-prod] Using image: ${{ needs.publish.outputs.image_repo }}:${{ needs.publish.outputs.deploy_tag }}"
-            cd "${{ secrets.PROD_DEPLOY_WORKDIR }}"
-            echo "[deploy-prod] Logging into GHCR"
-            echo "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_USER" --password-stdin
-            echo "[deploy-prod] Pulling latest snippet-service image"
-            docker compose pull snippet-service
-            echo "[deploy-prod] Restarting snippet-service container"
-            docker compose up -d --no-deps snippet-service
-            echo "[deploy-prod] Pruning dangling images"
+            cd "${{ secrets.DEPLOY_WORKDIR_PROD }}"
+            echo "$GHCR_LOGIN_TOKEN_PROD" | docker login ghcr.io -u "$GHCR_LOGIN_USER_PROD" --password-stdin
+            COMPOSE_FILE="docker-compose.prod.yml"
+            ENV_FILE=".env.prod"
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "::error file=$COMPOSE_FILE::Compose file not found"
+              exit 1
+            fi
+            ENV_FLAG=""
+            if [ -f "$ENV_FILE" ]; then
+              ENV_FLAG="--env-file $ENV_FILE"
+            fi
+            docker compose -f "$COMPOSE_FILE" $ENV_FLAG pull snippet-service
+            docker compose -f "$COMPOSE_FILE" $ENV_FLAG up -d --no-deps snippet-service
             docker image prune -f --filter "dangling=true"
