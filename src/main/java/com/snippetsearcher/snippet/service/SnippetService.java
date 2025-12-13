@@ -376,7 +376,7 @@ public class SnippetService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent));
+              snippet.getLanguage(), snippet.getVersion(), executableContent, null));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
@@ -552,5 +552,21 @@ public class SnippetService {
       return "";
     }
     return assetKey.substring(lastDot + 1);
+  }
+
+  @Transactional(readOnly = true)
+  public LanguageDtos.ExecuteResponse executeSnippet(Jwt jwt, UUID snippetId, String input) {
+    UserAccountDto user = ensureUser(jwt);
+    Snippet snippet = loadSnippetOwnedBy(snippetId, user.id());
+
+    String snippetContent = downloadSnippetContent(snippet);
+
+    try {
+      return languageClient.execute(
+          new LanguageDtos.ExecuteRequest(
+              snippet.getLanguage(), snippet.getVersion(), snippetContent, input));
+    } catch (Exception ex) {
+      throw new IllegalStateException("No se pudo ejecutar el snippet.", ex);
+    }
   }
 }

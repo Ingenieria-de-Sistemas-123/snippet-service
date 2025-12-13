@@ -199,7 +199,7 @@ public class SnippetTestService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent));
+              snippet.getLanguage(), snippet.getVersion(), executableContent, ""));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
