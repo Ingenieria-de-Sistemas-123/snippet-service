@@ -65,26 +65,28 @@ class SnippetRequestsValidationTest {
   // ---------- CreateSnippetTestRequest ----------
   @Test
   void createSnippetTestRequest_valid_passes() {
-    CreateSnippetTestRequest req = new CreateSnippetTestRequest("Test 1", "print(1);");
+    CreateSnippetTestRequest req =
+        new CreateSnippetTestRequest("Test 1", "desc", "input", "output");
     assertTrue(validator.validate(req).isEmpty());
   }
 
   @Test
-  void createSnippetTestRequest_blankScript_fails() {
-    CreateSnippetTestRequest req = new CreateSnippetTestRequest("Test 1", " ");
+  void createSnippetTestRequest_blankExpectedOutput_fails() {
+    CreateSnippetTestRequest req = new CreateSnippetTestRequest("Test 1", "desc", "input", " ");
     assertFalse(validator.validate(req).isEmpty());
   }
 
   // ---------- UpdateSnippetTestRequest ----------
   @Test
   void updateSnippetTestRequest_valid_passes() {
-    UpdateSnippetTestRequest req = new UpdateSnippetTestRequest("Test 1", "print(1);");
+    UpdateSnippetTestRequest req =
+        new UpdateSnippetTestRequest("Test 1", "desc", "input", "expected");
     assertTrue(validator.validate(req).isEmpty());
   }
 
   @Test
   void updateSnippetTestRequest_blankName_fails() {
-    UpdateSnippetTestRequest req = new UpdateSnippetTestRequest(" ", "print(1);");
+    UpdateSnippetTestRequest req = new UpdateSnippetTestRequest(" ", "desc", "input", "expected");
     assertFalse(validator.validate(req).isEmpty());
   }
 

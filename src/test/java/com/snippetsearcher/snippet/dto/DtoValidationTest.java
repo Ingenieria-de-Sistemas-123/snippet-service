@@ -24,12 +24,6 @@ class DtoValidationTest {
   }
 
   @Test
-  void createSnippetTestRequest_blankScript_invalid() {
-    var dto = new CreateSnippetTestRequest("T", " ");
-    assertFalse(validator.validate(dto).isEmpty());
-  }
-
-  @Test
   void formatSnippetRequest_blankContent_invalid() {
     var dto = new FormatSnippetRequest(" ", "ps", "1.0", false);
     assertFalse(validator.validate(dto).isEmpty());
@@ -58,5 +52,11 @@ class DtoValidationTest {
   void ruleRequest_ok_valid() {
     var dto = new RuleRequest("r1", "ok", true, 2);
     assertTrue(validator.validate(dto).isEmpty());
+  }
+
+  @Test
+  void createSnippetTestRequest_blankExpectedOutput_invalid() {
+    var dto = new CreateSnippetTestRequest("T", null, "input", " ");
+    assertFalse(validator.validate(dto).isEmpty());
   }
 }

@@ -49,7 +49,8 @@ class SnippetTestControllerTest {
   void createSnippetTest_returns201() throws Exception {
     UUID snippetId = UUID.randomUUID();
     SnippetTestResponse resp =
-        new SnippetTestResponse(UUID.randomUUID(), "t", "d", null, null, null, null);
+        new SnippetTestResponse(
+            UUID.randomUUID(), "t", "d", "input", "out", null, null, null, null);
 
     when(snippetTestService.createSnippetTest(any(), eq(snippetId), any())).thenReturn(resp);
 
@@ -59,7 +60,7 @@ class SnippetTestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                                        {"name":"Test 1","script":"print(1);"}
+                                        {"name":"Test 1","expectedOutput":"out","input":"input"}
                                         """))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value("t"));
@@ -76,7 +77,7 @@ class SnippetTestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                                        {"name":" ","script":"print(1);"}
+                                        {"name":" ","expectedOutput":"out"}
                                         """))
         .andExpect(status().isBadRequest());
   }
@@ -85,7 +86,8 @@ class SnippetTestControllerTest {
   void updateSnippetTest_returns200() throws Exception {
     UUID snippetId = UUID.randomUUID();
     UUID testId = UUID.randomUUID();
-    SnippetTestResponse resp = new SnippetTestResponse(testId, "t", "d", null, null, null, null);
+    SnippetTestResponse resp =
+        new SnippetTestResponse(testId, "t", "d", "input", "out", null, null, null, null);
 
     when(snippetTestService.updateSnippetTest(any(), eq(snippetId), eq(testId), any()))
         .thenReturn(resp);
@@ -96,7 +98,7 @@ class SnippetTestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """
-                                        {"name":"Test 2","script":"print(2);"}
+                                        {"name":"Test 2","expectedOutput":"out","input":"input"}
                                         """))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists());

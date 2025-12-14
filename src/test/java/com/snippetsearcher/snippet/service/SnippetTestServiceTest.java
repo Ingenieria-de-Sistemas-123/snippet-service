@@ -75,7 +75,7 @@ class SnippetTestServiceTest {
 
     var response =
         service.createSnippetTest(
-            jwt(), snippetId, new CreateSnippetTestRequest("name", "print(1);"));
+            jwt(), snippetId, new CreateSnippetTestRequest("name", "desc", "input", "out"));
 
     assertNotNull(response.id());
     assertEquals("name", response.name());

@@ -114,7 +114,9 @@ class ResponsesJsonAndMapperTest {
 
     List<SnippetLintErrorResponse> lint = List.of(new SnippetLintErrorResponse("r", 1, 2, "m"));
     List<SnippetTestResponse> tests =
-        List.of(new SnippetTestResponse(UUID.randomUUID(), "t", "d", null, null, null, null));
+        List.of(
+            new SnippetTestResponse(
+                UUID.randomUUID(), "t", "d", null, null, null, null, null, null));
 
     SnippetResponse r =
         SnippetResponse.fromEntity(s, "content", lint, tests, SnippetComplianceStatus.VALID, "ok");

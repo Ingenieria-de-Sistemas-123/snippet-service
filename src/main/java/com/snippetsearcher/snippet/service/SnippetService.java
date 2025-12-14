@@ -281,18 +281,17 @@ public class SnippetService {
 
     String snippetContent = downloadSnippetContent(snippet);
     LanguageDtos.ExecuteResponse response =
-        executeTest(
-            snippet,
-            snippetContent,
-            test.getInput() != null ? test.getInput() : "");
+        executeTest(snippet, snippetContent, test.getInput() != null ? test.getInput() : "");
     updateTestResult(test, response);
     snippetTestRepository.save(test);
 
     boolean passed =
         response.exitCode() == 0
             && response.stdout() != null
-            && response.stdout().trim().equals(
-                test.getExpectedOutput() != null ? test.getExpectedOutput().trim() : "");
+            && response
+                .stdout()
+                .trim()
+                .equals(test.getExpectedOutput() != null ? test.getExpectedOutput().trim() : "");
     return new SnippetTestExecutionResponse(
         test.getId(),
         passed,

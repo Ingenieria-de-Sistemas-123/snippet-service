@@ -167,7 +167,8 @@ class SnippetServiceTest {
     SnippetTest test = new SnippetTest();
     test.setId(UUID.randomUUID());
     test.setSnippet(snippet);
-    test.setScript("assert(true);");
+    test.setInput("input");
+    test.setExpectedOutput("ok");
     when(snippetTestRepository.findByIdAndSnippetId(eq(test.getId()), eq(snippetId)))
         .thenReturn(Optional.of(test));
 
@@ -180,29 +181,6 @@ class SnippetServiceTest {
     assertTrue(response.passed());
     assertEquals(0, response.exitCode());
     verify(snippetTestRepository).save(argThat(t -> t.getLastRunExitCode() == 0));
-  }
-
-  @Test
-  void executeSnippetTestRequiresScript() {
-    UUID snippetId = UUID.randomUUID();
-    Snippet snippet = new Snippet("n", "ps", "1.0", "d", "asset-key", UUID.randomUUID());
-    snippet.setId(snippetId);
-    when(snippetRepository.findByIdAndOwnerUserId(eq(snippetId), any()))
-        .thenReturn(Optional.of(snippet));
-
-    SnippetTest test = new SnippetTest();
-    test.setId(UUID.randomUUID());
-    test.setSnippet(snippet);
-    test.setScript("  "); // missing script
-    when(snippetTestRepository.findByIdAndSnippetId(eq(test.getId()), eq(snippetId)))
-        .thenReturn(Optional.of(test));
-
-    when(assetClient.downloadSnippet("asset-key")).thenReturn("print(1);".getBytes());
-
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> snippetService.executeSnippetTest(jwt(), snippetId, test.getId()));
-    verify(languageClient, never()).execute(any());
   }
 
   @Test

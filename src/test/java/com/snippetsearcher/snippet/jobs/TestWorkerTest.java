@@ -49,7 +49,7 @@ class TestWorkerTest {
 
     SnippetTest t1 = new SnippetTest();
     t1.setName("t1");
-    t1.setScript("println(\"ok\")");
+    t1.setExpectedOutput("OK");
     when(testRepo.findBySnippetId(snippetId)).thenReturn(List.of(t1));
 
     when(language.execute(any())).thenReturn(new LanguageDtos.ExecuteResponse(0, "OK", ""));

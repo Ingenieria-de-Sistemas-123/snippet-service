@@ -45,18 +45,20 @@ class SnippetRequestsRecordTest {
 
   @Test
   void createSnippetTestRequest_accessorsAndEquality() {
-    CreateSnippetTestRequest a = new CreateSnippetTestRequest("T", "S");
-    CreateSnippetTestRequest b = new CreateSnippetTestRequest("T", "S");
+    CreateSnippetTestRequest a = new CreateSnippetTestRequest("T", "D", "I", "O");
+    CreateSnippetTestRequest b = new CreateSnippetTestRequest("T", "D", "I", "O");
 
     assertEquals(a, b);
     assertEquals("T", a.name());
-    assertEquals("S", a.script());
+    assertEquals("D", a.description());
+    assertEquals("I", a.input());
+    assertEquals("O", a.expectedOutput());
   }
 
   @Test
   void updateSnippetTestRequest_accessorsAndEquality() {
-    UpdateSnippetTestRequest a = new UpdateSnippetTestRequest("T", "S");
-    UpdateSnippetTestRequest b = new UpdateSnippetTestRequest("T", "S");
+    UpdateSnippetTestRequest a = new UpdateSnippetTestRequest("T", "D", "I", "O");
+    UpdateSnippetTestRequest b = new UpdateSnippetTestRequest("T", "D", "I", "O");
 
     assertEquals(a, b);
     assertTrue(a.toString().contains("UpdateSnippetTestRequest"));
