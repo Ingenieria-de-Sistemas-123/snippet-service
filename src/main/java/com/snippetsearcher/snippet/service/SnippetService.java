@@ -280,12 +280,19 @@ public class SnippetService {
             .orElseThrow(() -> new IllegalArgumentException("El test indicado no existe."));
 
     String snippetContent = downloadSnippetContent(snippet);
-    String executableContent = buildExecutableContent(snippetContent, test.getScript());
-    LanguageDtos.ExecuteResponse response = executeTest(snippet, executableContent);
+    LanguageDtos.ExecuteResponse response =
+        executeTest(
+            snippet,
+            snippetContent,
+            test.getInput() != null ? test.getInput() : "");
     updateTestResult(test, response);
     snippetTestRepository.save(test);
 
-    boolean passed = response.exitCode() == 0;
+    boolean passed =
+        response.exitCode() == 0
+            && response.stdout() != null
+            && response.stdout().trim().equals(
+                test.getExpectedOutput() != null ? test.getExpectedOutput().trim() : "");
     return new SnippetTestExecutionResponse(
         test.getId(),
         passed,
@@ -365,18 +372,12 @@ public class SnippetService {
         .toList();
   }
 
-  private String buildExecutableContent(String snippetContent, String testScript) {
-    if (!StringUtils.hasText(testScript)) {
-      throw new IllegalArgumentException("El script del test es obligatorio.");
-    }
-    return snippetContent + System.lineSeparator() + System.lineSeparator() + testScript;
-  }
-
-  private LanguageDtos.ExecuteResponse executeTest(Snippet snippet, String executableContent) {
+  private LanguageDtos.ExecuteResponse executeTest(
+      Snippet snippet, String executableContent, String input) {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent, null));
+              snippet.getLanguage(), executableContent, snippet.getVersion(), input));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
@@ -564,7 +565,7 @@ public class SnippetService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), snippetContent, input));
+              snippet.getLanguage(), snippetContent, snippet.getVersion(), input));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el snippet.", ex);
     }

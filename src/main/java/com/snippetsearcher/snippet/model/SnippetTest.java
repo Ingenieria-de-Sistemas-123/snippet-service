@@ -27,8 +27,11 @@ public class SnippetTest {
   @Column(length = 1000)
   private String description;
 
-  @Column(name = "script", nullable = false, columnDefinition = "TEXT")
-  private String script;
+  @Column(name = "input", columnDefinition = "TEXT")
+  private String input;
+
+  @Column(name = "expected_output", nullable = false, columnDefinition = "TEXT")
+  private String expectedOutput;
 
   @Column(name = "last_run_at")
   private OffsetDateTime lastRunAt;
