@@ -87,7 +87,7 @@ public class TestWorker {
         LanguageDtos.ExecuteResponse response =
             languageClient.execute(
                 new LanguageDtos.ExecuteRequest(
-                    snippet.getLanguage(), snippet.getVersion(), snippetContent, test.getInput()));
+                    snippet.getLanguage(), snippetContent, snippet.getVersion(), test.getInput()));
 
         test.setLastRunAt(OffsetDateTime.now());
         test.setLastRunExitCode(response.exitCode());

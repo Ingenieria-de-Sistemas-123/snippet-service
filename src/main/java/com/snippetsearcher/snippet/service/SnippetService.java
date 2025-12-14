@@ -377,7 +377,7 @@ public class SnippetService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), executableContent, input));
+              snippet.getLanguage(), executableContent, snippet.getVersion(), input));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el test del snippet.", ex);
     }
@@ -565,7 +565,7 @@ public class SnippetService {
     try {
       return languageClient.execute(
           new LanguageDtos.ExecuteRequest(
-              snippet.getLanguage(), snippet.getVersion(), snippetContent, input));
+              snippet.getLanguage(), snippetContent, snippet.getVersion(), input));
     } catch (Exception ex) {
       throw new IllegalStateException("No se pudo ejecutar el snippet.", ex);
     }
