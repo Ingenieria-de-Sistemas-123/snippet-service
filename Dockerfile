@@ -6,4 +6,4 @@ RUN gradle clean bootJar --no-daemon
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*SNAPSHOT*.jar app.jar
-ENTRYPOINT ["java","-jar","/app/app.jar","--spring.profiles.active=docker"]
+ENTRYPOINT ["java","-jar","/app/app.jar","-javaagent:/app/newrelic/newrelic.jar","--spring.profiles.active=docker"]
