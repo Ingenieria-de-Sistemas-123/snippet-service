@@ -37,4 +37,29 @@ class FormatterConfigBuilderTest {
     JsonNode node = mapper.readTree(json);
     assertEquals(4, node.get("indentSize").asInt());
   }
+
+  @Test
+  void builds_json_only_for_active_rules() {
+    var rules =
+        List.of(
+            new Rule("spaceBeforeColon", "a", true, null),
+            new Rule("spaceAfterColon", "b", false, null),
+            new Rule("indentSize", "c", true, 4));
+
+    String json = builder.buildConfigJson(rules);
+
+    assertTrue(json.contains("spaceBeforeColon"));
+    assertTrue(json.contains("indentSize"));
+    assertFalse(json.contains("spaceAfterColon"));
+    assertTrue(json.contains("4"));
+  }
+
+  @Test
+  void unknown_rule_is_ignored() {
+    var rules = List.of(new Rule("unknown-rule", "x", true, null));
+
+    String json = builder.buildConfigJson(rules);
+
+    assertEquals("{}", json);
+  }
 }

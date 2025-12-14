@@ -1,4 +1,4 @@
-package com.snippetsearcher.snippet;
+package com.snippetsearcher.snippet.controller;
 
 import org.junit.jupiter.api.Disabled;
 
