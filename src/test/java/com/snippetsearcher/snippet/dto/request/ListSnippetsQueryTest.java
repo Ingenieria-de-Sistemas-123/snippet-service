@@ -112,4 +112,60 @@ class ListSnippetsQueryTest {
             () -> ListSnippetsQuery.from(0, 10, null, null, null, "all", "name", "wat"));
     assertTrue(ex.getMessage().contains("sort_dir"));
   }
+
+  @Test
+  void from_defaults_work() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, null, null, null, null);
+
+    assertEquals(0, q.page());
+    assertEquals(10, q.pageSize());
+    assertEquals(ListSnippetsQuery.Relation.ALL, q.relation());
+    assertEquals(ListSnippetsQuery.SortField.UPDATED_AT, q.sortField());
+    assertEquals(Sort.Direction.DESC, q.sortDirection());
+  }
+
+  @Test
+  void complianceFilter_valid_true() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, true, "all", "updated_at", "asc");
+
+    assertEquals(SnippetComplianceStatus.VALID, q.complianceFilter());
+  }
+
+  @Test
+  void complianceFilter_valid_false() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, false, "all", "updated_at", "asc");
+
+    assertEquals(SnippetComplianceStatus.INVALID, q.complianceFilter());
+  }
+
+  @Test
+  void complianceFilter_null_when_not_provided() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, null, "all", "updated_at", "asc");
+
+    assertNull(q.complianceFilter());
+  }
+
+  @Test
+  void relation_parses_owner_as_owned() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, null, "owner", "updated_at", "asc");
+
+    assertEquals(ListSnippetsQuery.Relation.OWNED, q.relation());
+  }
+
+  @Test
+  void sortField_parses_dash_and_case() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, null, "all", "updated-at", "desc");
+
+    assertEquals(ListSnippetsQuery.SortField.UPDATED_AT, q.sortField());
+  }
+
+  @Test
+  void sort_contains_secondary_updated_at() {
+    var q = ListSnippetsQuery.from(0, 10, null, null, null, "all", "name", "asc");
+
+    var sort = q.sort();
+
+    assertEquals("name", sort.iterator().next().getProperty());
+    assertTrue(sort.stream().anyMatch(o -> o.getProperty().equals("updatedAt")));
+  }
 }

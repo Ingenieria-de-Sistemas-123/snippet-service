@@ -72,4 +72,20 @@ class FormattingRulesServiceTest {
 
     assertEquals("{}", json);
   }
+
+  @Test
+  void returns_defaults_when_asset_missing() {
+    AssetClient asset = mock(AssetClient.class);
+    ObjectMapper mapper = new ObjectMapper();
+    FormatterConfigBuilder builder = mock(FormatterConfigBuilder.class);
+    SnippetJobProducer jobs = mock(SnippetJobProducer.class);
+
+    when(asset.downloadSnippet(any())).thenThrow(new RuntimeException("not found"));
+
+    FormattingRulesService service = new FormattingRulesService(asset, mapper, builder, jobs);
+
+    var rules = service.getFormattingRules();
+
+    assertFalse(rules.isEmpty());
+  }
 }

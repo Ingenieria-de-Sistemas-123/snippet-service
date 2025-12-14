@@ -22,4 +22,22 @@ class FileTypeServiceTest {
     assertEquals("ps", response.language());
     assertEquals(".prs", response.extension());
   }
+
+  @Test
+  void maps_properties_to_response() {
+    SnippetProperties props = new SnippetProperties();
+    var ft = new SnippetProperties.FileType();
+    ft.setLanguage("java");
+    ft.setExtension("java");
+    props.getFileTypes().add(ft);
+
+    FileTypeService service = new FileTypeService(props);
+
+    var res = service.getFileTypes();
+
+    assertEquals(1, res.size());
+    FileTypeResponse r = res.get(0);
+    assertEquals("java", r.language());
+    assertEquals("java", r.extension());
+  }
 }

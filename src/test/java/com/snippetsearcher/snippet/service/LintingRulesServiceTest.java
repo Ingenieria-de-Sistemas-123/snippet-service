@@ -56,4 +56,20 @@ class LintingRulesServiceTest {
     assertTrue(json.contains("\"id\""));
     verify(jobProducer).enqueueLintAll(adminId);
   }
+
+  @Test
+  void update_triggers_lint_job() throws Exception {
+    AssetClient asset = mock(AssetClient.class);
+    ObjectMapper mapper = new ObjectMapper();
+    SnippetJobProducer jobs = mock(SnippetJobProducer.class);
+
+    LintingRulesService service = new LintingRulesService(asset, mapper, jobs);
+
+    List<Rule> rules = List.of(new Rule("id", "", true, null));
+    UUID admin = UUID.randomUUID();
+
+    service.updateLintingRules(rules, admin);
+
+    verify(jobs).enqueueLintAll(admin);
+  }
 }
