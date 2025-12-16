@@ -119,4 +119,9 @@ public class SnippetController {
   public FormatSnippetResponse formatSnippet(@Valid @RequestBody FormatSnippetRequest request) {
     return snippetLanguageService.formatSnippet(request);
   }
+
+  @GetMapping("/fail")
+  public void fail() {
+    throw new RuntimeException("Triggering New Relic alert");
+  }
 }

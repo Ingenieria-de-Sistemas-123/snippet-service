@@ -65,6 +65,9 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - LANGUAGE_BASE_URL=http://language-service:8080
       - ASSET_SERVICE_BASE_URL=http://asset-service:8080
+      - NEW_RELIC_APP_NAME=${NEW_RELIC_APP_NAME}
+      - NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}
+      - JAVA_TOOL_OPTIONS=-javaagent:/newrelic/newrelic.jar
 
 volumes:
   pg_data:
